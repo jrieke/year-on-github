@@ -21,14 +21,16 @@ load_dotenv()
 api = GhApi(token=os.getenv("GH_TOKEN"), limit_cb=limit_cb)
 
 
-def get_contributions(username, year):
+def read_graph_ql(username, year, verbose=False):
     """
-    Reads total number of contributions from Github's GraphQL API.
+    Reads total contributions from Github's GraphQL API and returns as dict.
     
     Contributions = Commits + issues + PRs (public and private). This is the same value
     that's shown on the user's profile page on the commit calendar.
     Endpoint: https://docs.github.com/en/free-pro-team@latest/graphql/reference/objects#contributioncalendar
     """
+    
+    # Set up request params.
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {os.getenv('GH_TOKEN')}"}
     json = {
@@ -42,23 +44,30 @@ def get_contributions(username, year):
     }}
     }}"""
     }
+    
+    # Make POST request to GraphQL API.
     response = requests.post(url, headers=headers, json=json)
     # TODO: Filter bad response.
     contributions = response.json()["data"]["user"]["contributionsCollection"][
         "contributionCalendar"
     ]["totalContributions"]
-    return contributions
-
-
-def get_stats(username, year, verbose=False):
-    """Returns a dict of several Github stats for one year."""
     
-    contributions = get_contributions(username, year)
+    if verbose:
+        print(f"Contributions: {contributions}")
+    
+    return {"contributions": contributions}
 
+
+def read_api(username, year, verbose=False):
+    """
+    Reads several stats for the year from Github's API and returns as dict.
+    
+    Note that the API has a rate limit of 5000 calls per hour.
+    """
     new_repos = 0
     new_stars_per_repo = defaultdict(lambda: 0)
 
-    # Iterate through all repos and crawl numbers.
+    # Iterate through all repos.
     for repos in paged(api.repos.list_for_user, username, per_page=100):
         for repo in repos:
 
@@ -70,7 +79,7 @@ def get_stats(username, year, verbose=False):
             if int(repo.created_at[:4]) == year:
                 new_repos += 1
 
-            # Count new stars.
+            # Count new stars (several options to minimize amount of API calls).
             # Option 1: 0 stars, so also 0 new stars.
             if repo.stargazers_count == 0:
                 new_stars_per_repo[repo.name] = 0
@@ -110,19 +119,30 @@ def get_stats(username, year, verbose=False):
         hottest_name, hottest_full_name, hottest_new_stars = None, None, None
 
     stats = {
-        "contributions": contributions,
         "new_repos": new_repos,
         "new_stars": new_stars,
         "hottest_name": hottest_name,
         "hottest_full_name": hottest_full_name,
         "hottest_new_stars": hottest_new_stars,
     }
-
+    
     if verbose:
         print(f"New repos: {new_repos}")
         print(f"New stars per repo: {new_stars_per_repo}")
         print(f"New stars: {new_stars}")
         print(f"Hottest repo (+{hottest_new_stars} stars): {hottest_full_name}")
+        
+    return stats
 
+
+def get_stats(username, year, verbose=False):
+    """Returns a dict of several Github stats for one year."""
+
+    # Read stats from the normal Github API and the GraphQL API
+    api_stats = read_api(username, year, verbose)
+    graph_ql_stats = read_graph_ql(username, year, verbose)
+    
+    # Merge them.
+    stats = {**api_stats, **graph_ql_stats}
     return stats
 
