@@ -1,16 +1,16 @@
 import os
 from ghapi.core import GhApi
 from ghapi.page import paged
-from urllib.request import urlopen
-from PIL import Image
+# from urllib.request import urlopen
+# from PIL import Image
 from collections import defaultdict
 from dotenv import load_dotenv
 import requests
 
 
-def get_image(url):
-    img = Image.open(urlopen(url))
-    return img
+# def get_image(url):
+#     img = Image.open(urlopen(url))
+#     return img
 
 
 def limit_cb(rem, quota):
@@ -27,7 +27,10 @@ def read_graph_ql(username, year, verbose=False):
     
     Contributions = Commits + issues + PRs (public and private). This is the same value
     that's shown on the user's profile page on the commit calendar.
+    
     Endpoint: https://docs.github.com/en/free-pro-team@latest/graphql/reference/objects#contributioncalendar
+    Some examples at: https://stackoverflow.com/questions/18262288/finding-total-contributions-of-a-user-from-github-api
+    GraphQL API Explorer: https://docs.github.com/en/free-pro-team@latest/graphql/overview/explorer
     """
     
     # Set up request params.
