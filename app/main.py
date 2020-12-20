@@ -1,4 +1,5 @@
 import random
+import time
 import streamlit as st
 import github_reader
 
@@ -32,7 +33,9 @@ if username or clicked:
 
         # TODO: Cache the results of this call, so we don't query the same user all
         # over again.
+        start_time = time.time()
         stats = github_reader.get_stats(username, 2020)
+        st.write(f"Took {time.time() - start_time:.1f} s")
 
         st.markdown(
             f"""

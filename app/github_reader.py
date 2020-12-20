@@ -1,6 +1,7 @@
 import os
 from ghapi.core import GhApi
-from ghapi.page import paged
+from ghapi.page import paged, pages
+
 # from urllib.request import urlopen
 # from PIL import Image
 from collections import defaultdict
@@ -32,7 +33,7 @@ def read_graph_ql(username, year, verbose=False):
     Some examples at: https://stackoverflow.com/questions/18262288/finding-total-contributions-of-a-user-from-github-api
     GraphQL API Explorer: https://docs.github.com/en/free-pro-team@latest/graphql/overview/explorer
     """
-    
+
     # Set up request params.
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {os.getenv('GH_TOKEN')}"}
@@ -47,17 +48,17 @@ def read_graph_ql(username, year, verbose=False):
     }}
     }}"""
     }
-    
+
     # Make POST request to GraphQL API.
     response = requests.post(url, headers=headers, json=json)
     # TODO: Filter bad response.
     contributions = response.json()["data"]["user"]["contributionsCollection"][
         "contributionCalendar"
     ]["totalContributions"]
-    
+
     if verbose:
         print(f"Contributions: {contributions}")
-    
+
     return {"contributions": contributions}
 
 
@@ -71,6 +72,8 @@ def read_api(username, year, verbose=False):
     new_stars_per_repo = defaultdict(lambda: 0)
 
     # Iterate through all repos.
+    # Use `paged` instead of `pages` here because most users will have <100 repos anyway 
+    # and getting the number of pages would require an additional API call.
     for repos in paged(api.repos.list_for_user, username, per_page=100):
         for repo in repos:
 
@@ -83,14 +86,15 @@ def read_api(username, year, verbose=False):
                 new_repos += 1
 
             # Count new stars (several options to minimize amount of API calls).
-            # Option 1: 0 stars, so also 0 new stars.
             if repo.stargazers_count == 0:
+                # Option 1: 0 stars, so also 0 new stars.
                 new_stars_per_repo[repo.name] = 0
-            # Option 2: Created this year, therefore get all stars.
             elif int(repo.created_at[:4]) == year:
+                # Option 2: Created this year, therefore get all stars.
                 new_stars_per_repo[repo.name] = repo.stargazers_count
-            # Option 3 (most API calls): Look at all stargazers and find starred date.
             else:
+                # Option 3 (most API calls): Look at all stargazers and find starred date.
+
                 # TODO: This gives stargazers in reverse order (i.e. oldest come first).
                 # To iterate over this more quickly/with less API calls,
                 # I could reverse the order (i.e. retrieve the last pages first)
@@ -99,17 +103,41 @@ def read_api(username, year, verbose=False):
                 # then jump a few pages backward and so on, until we find one that starred in 2019,
                 # and then backtrack to find the exact number.
                 # TODO: Set a maximum number of API calls/pages here.
-                for stargazers in paged(
+                
+                # Calculate number of pages of stargazers through total number of
+                # stargazers. Each page has 100 items.
+                num_pages = 1 + int(repo.stargazers_count / 100)  # round up
+
+                # METHOD 1: PAGES (with an S)
+                # jrieke: 6 seconds, 15 API calls
+                # chrieke: 7 seconds, 34 API calls
+                # This automatically inserts per_page=100.
+                for stargazer in pages(
                     api.activity.list_stargazers_for_repo,
+                    num_pages,
                     username,
                     repo.name,
-                    per_page=100,
                     headers={"Accept": "application/vnd.github.v3.star+json"},
-                ):
-                    for stargazer in stargazers:
-                        # print(stargazer)
-                        if int(stargazer.starred_at[:4]) == year:
-                            new_stars_per_repo[repo.name] += 1
+                ).concat():
+                    # for stargazer in stargazers:
+                    # print(stargazer)
+                    if int(stargazer.starred_at[:4]) == year:
+                        new_stars_per_repo[repo.name] += 1
+
+                # METHOD 2: PAGED (with a D)
+                # jrieke: 9 seconds, 29 API calls
+                # chrieke: 23 seconds, 48 API calls
+                # for stargazers in paged(
+                #     api.activity.list_stargazers_for_repo,
+                #     username,
+                #     repo.name,
+                #     per_page=100,
+                #     headers={"Accept": "application/vnd.github.v3.star+json"},
+                # ):
+                #     for stargazer in stargazers:
+                #         # print(stargazer)
+                #         if int(stargazer.starred_at[:4]) == year:
+                #             new_stars_per_repo[repo.name] += 1
 
     # Calculate summary statistics.
     new_stars = sum(new_stars_per_repo.values())
@@ -128,13 +156,13 @@ def read_api(username, year, verbose=False):
         "hottest_full_name": hottest_full_name,
         "hottest_new_stars": hottest_new_stars,
     }
-    
+
     if verbose:
         print(f"New repos: {new_repos}")
         print(f"New stars per repo: {new_stars_per_repo}")
         print(f"New stars: {new_stars}")
         print(f"Hottest repo (+{hottest_new_stars} stars): {hottest_full_name}")
-        
+
     return stats
 
 
@@ -144,7 +172,7 @@ def get_stats(username, year, verbose=False):
     # Read stats from the normal Github API and the GraphQL API
     api_stats = read_api(username, year, verbose)
     graph_ql_stats = read_graph_ql(username, year, verbose)
-    
+
     # Merge them.
     stats = {**api_stats, **graph_ql_stats}
     return stats
