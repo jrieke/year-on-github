@@ -39,7 +39,7 @@ if username:
             ➕ Commits/Issues/PRs: {stats['contributions']}<br>
             ⭐ New Stars: {stats['new_stars']}<br>
             🏝️ New Repos: {stats['new_repos']}<br>
-            🔥 Hottest Repo (+{stats['hottest_new_stars']} stars): <a href="github.com/jrieke/traingenerator">{stats['hottest_full_name']}</a>
+            🔥 Hottest Repo (+{stats['hottest_new_stars']} stars): <a href="https://github.com/{stats['hottest_full_name']}">{stats['hottest_full_name']}</a>
             <br><br>
             Share your own: <a href="https://my-year-on-github.jrieke.com">my-year-on-github.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a>
             </p>
