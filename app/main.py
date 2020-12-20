@@ -13,7 +13,7 @@ st.set_page_config(page_title="My Year On Github", page_icon=":octopus:")
 SPINNER_LINES = [
     "🔍 Finding your data...",
     "🧮 Crunching numbers...",
-    "🐙 Looking at octocats...",
+    "🐙 Counting octocats...",
 ]
 
 """
@@ -22,12 +22,16 @@ SPINNER_LINES = [
 Share your Github stats for 2020 on Twitter. Just enter your Github username below.
 """
 
-
 username = st.text_input("")
+# col1, col2, col3 = st.beta_columns(3)
+clicked = st.button("Get stats")
 
-if username:
+if username or clicked:
 
     with st.spinner(random.choice(SPINNER_LINES)):
+
+        # TODO: Cache the results of this call, so we don't query the same user all
+        # over again.
         stats = github_reader.get_stats(username, 2020)
 
         st.markdown(
