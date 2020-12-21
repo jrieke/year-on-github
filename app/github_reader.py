@@ -143,7 +143,7 @@ def get_stats(username, year, verbose=False):
             print()
 
     progress = 0.2
-    yield calculate_summary_stats(), progress
+    yield calculate_summary_stats(), progress, ""
 
     # Inspect repo with most stars first.
     # TODO: If people have very large repos, it's probably better to do a medium sized
@@ -210,7 +210,7 @@ def get_stats(username, year, verbose=False):
         )
 
         progress = 0.2 + 0.8 * ((i + 1) / len(repos_to_inspect))
-        yield calculate_summary_stats(), progress
+        yield calculate_summary_stats(), progress, repo_name
 
     if verbose:
         print(f"New repos: {new_repos}")

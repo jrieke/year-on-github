@@ -29,7 +29,7 @@ clicked = st.button("Get stats")
 
 
 template = """
-<p style="margin-top: 50px; margin: 50px; padding: 20px; border: 1px solid #4D9FEB; border-radius: 10px;">
+<p style="margin-top: 20px; margin: 50px; padding: 20px; border: 1px solid #4D9FEB; border-radius: 10px;">
 My year on <a href="https://twitter.com/github">@github</a> 2020 ✨ 
 <br><br>
 🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
@@ -44,8 +44,12 @@ Share your own: <a href="https://my-year-on-github.jrieke.com">my-year-on-github
 
 if username or clicked:
 
+    "---"
+
     # with st.spinner(random.choice(SPINNER_LINES)):
-    progress_bar = st.progress(0.)
+    progress_text = st.empty()
+    progress_text.write("Preparing...")
+    progress_bar = st.progress(0.0)
     tweet = st.empty()
 
     # TODO: Cache the results of this call, so we don't query the same user all
@@ -54,13 +58,14 @@ if username or clicked:
     contributions = github_reader.get_contributions(username, 2020)
     # stats = github_reader.get_stats(username, 2020)
 
-    for stats, progress in github_reader.get_stats(username, 2020):
+    for stats, progress, repo_name in github_reader.get_stats(username, 2020):
         # print(stats)
+        progress_text.write(f"Parsing repo: {username}/{repo_name}")
         progress_bar.progress(progress)
         tweet.markdown(
             template.format(username=username, contributions=contributions, **stats),
             unsafe_allow_html=True,
         )
-
-    st.write(f"Took {time.time() - start_time:.1f} s")
+    progress_text.write(f"Finished! (took {time.time() - start_time:.1f} s)")
+    progress_bar.empty()
 
