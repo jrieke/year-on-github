@@ -201,6 +201,7 @@ def get_stats(username, year, verbose=False):
         print("Took", time.time() - stars_start_time)
         print()
 
+        # TODO: Use stargazers_count to calculate progress.
         progress = 0.2 + 0.8 * ((i + 1) / len(repos_to_inspect))
         try:
             next_repo_name = repos_to_inspect[i + 1][0]
