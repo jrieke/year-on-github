@@ -30,19 +30,21 @@ clicked = st.button("Get stats")
 
 template = """
 <p style="margin-top: 20px; margin: 50px; padding: 20px; border: 1px solid #4D9FEB; border-radius: 10px;">
-My year on <a href="https://twitter.com/github">@github</a> 2020 ✨ 
+My year on Github 2020 🧑‍💻✨ {username}
 <br><br>
-🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
 📬 Commits/Issues/PRs: {contributions}<br>
 ⭐ New Stars: {new_stars}<br>
 🏝️ New Repos: {new_repos}<br>
 🔥 Hottest Repo (+{hottest_new_stars} stars): <a href="https://github.com/{hottest_full_name}">{hottest_full_name}</a>
 <br><br>
-Share your own: <a href="https://my-year-on-github.jrieke.com">my-year-on-github.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a>
+Share your own: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> based on <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a>
 </p>
 """
 
-if username or clicked:
+# 🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
+# <a href="https://twitter.com/github">@github</a>
+
+if username or (clicked and username):
 
     "---"
 
