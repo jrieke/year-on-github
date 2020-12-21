@@ -16,7 +16,7 @@ import time
 
 
 def limit_cb(rem, quota):
-    # print(f"Quota remaining: {rem} of {quota}")
+    print(f"Quota remaining: {rem} of {quota}")
     pass
 
 
@@ -167,58 +167,44 @@ def get_stats(username, year, verbose=False):
         # and then backtrack to find the exact number.
         # TODO: Set a maximum number of API calls/pages here.
 
+        print(
+            f"{i+1:<3} / {len(repos_to_inspect)} {repo_name[:30]:30} ({stargazers_count} stars)",
+            end="",
+        )
         stars_start_time = time.time()
 
-        # Calculate number of pages of stargazers through total number of
-        # stargazers. Each page has 100 items.
-        num_pages = 1 + int(stargazers_count / 100)  # round up
-
-        # METHOD 1: PAGES (with an S)
-        # jrieke: 6 seconds, 15 API calls
-        # chrieke: 7 seconds, 34 API calls
-        # tiangolo: 280 API calls,
-
-        # This automatically inserts per_page=100.
-        for stargazer in pages(
-            api.activity.list_stargazers_for_repo,
-            num_pages,
-            username,
-            repo_name,
-            headers={"Accept": "application/vnd.github.v3.star+json"},
-        ).concat():
-            # for stargazer in stargazers:
-            # print(stargazer)
-            if int(stargazer.starred_at[:4]) == year:
-                new_stars_per_repo[repo_name] += 1
-
-        # METHOD 2: PAGED (with a D)
-        # jrieke: 9 seconds, 29 API calls
-        # chrieke: 23 seconds, 48 API calls
-        # for stargazers in paged(
-        #     api.activity.list_stargazers_for_repo,
-        #     username,
-        #     repo.name,
-        #     per_page=100,
-        #     headers={"Accept": "application/vnd.github.v3.star+json"},
-        # ):
-        #     for stargazer in stargazers:
-        #         # print(stargazer)
-        #         if int(stargazer.starred_at[:4]) == year:
-        #             new_stars_per_repo[repo.name] += 1
-        print(
-            str(i + 1).ljust(3),
-            "/",
-            len(repos_to_inspect),
-            repo_name[:30].ljust(30),
-            "-> took",
-            time.time() - stars_start_time,
+        # COMBINED WITH 1000 STARS LIMIT
+        # jrieke: 6 seconds, 16 API calls
+        # chrieke: 8 seconds, 19 API calls
+        # tiangolo: 53 seconds, 124 API calls
+        
+        # if stargazers_count < 0:
+            # METHOD 1: PAGES (with an S)
+            # jrieke: 6 seconds, 15 API calls
+            # chrieke: 7 seconds, 34 API calls
+            # tiangolo: 280 API calls, GIVES ERRORS OR STOPS
+        #     print(" -> Using counting")
+        #     new_stars_per_repo[repo_name] = find_stars_via_counting(
+        #         username, repo_name, stargazers_count, year
+        #     )
+        # else:
+        
+        # METHOD 3: BINARY SEARCH
+        # jrieke: 6 seconds, 16 API calls
+        # chrieke: 10 seconds, 19 API calls
+        # tiangolo: 55 seconds, 94 API calls
+        print(" -> Using binary search")
+        new_stars_per_repo[repo_name] = find_stars_via_binary_search(
+            username, repo_name, stargazers_count, year
         )
+
+        print("Took", time.time() - stars_start_time)
+        print()
 
         progress = 0.2 + 0.8 * ((i + 1) / len(repos_to_inspect))
         try:
             next_repo_name = repos_to_inspect[i + 1][0]
             if repos_to_inspect[i + 1][1] > 1000:
-                print("big one")
                 next_repo_name += " (wow, so many ⭐, this takes a bit!)"
         except IndexError:  # last repo doesn't have next one
             next_repo_name = ""
@@ -244,3 +230,111 @@ def get_stats(username, year, verbose=False):
 #     stats = {**api_stats, **graph_ql_stats}
 #     return stats
 
+
+def find_stars_via_counting(username, repo_name, stargazers_count, year):
+
+    # Calculate number of pages. Each page has 100 items.
+    num_pages = 1 + int(stargazers_count / 100)  # round up
+
+    # Retrieve all pages. This automatically inserts per_page=100.
+    # TODO: This here is the bottleneck where it stops sometimes if there are many
+    # stars/pages.
+    # TODO: In any way, make a timeout here!!
+    retrieved_pages = pages(
+        api.activity.list_stargazers_for_repo,
+        num_pages,
+        username,
+        repo_name,
+        headers={"Accept": "application/vnd.github.v3.star+json"},
+    )
+    print("Retrieved pages", end="")
+    concat_pages = retrieved_pages.concat()
+    print(", concatenated, iterating: ", end="")
+
+    # Iterate through all pages and count new stars.
+    new_stars = 0
+    for stargazer in concat_pages:
+        # for stargazer in stargazers:
+        # print(stargazer)
+        print(".", end="")
+        if int(stargazer.starred_at[:4]) == year:
+            new_stars += 1
+    print()
+    
+    return new_stars
+
+
+def find_stars_via_binary_search(username, repo_name, stargazers_count, year):
+
+    # Calculate number of pages. Each page has 100 items.
+    num_pages = 1 + int(stargazers_count / 100)  # round up
+
+    # Use binary search to find the page with the break from 2019 to 2020.
+    if num_pages == 1:
+        print("Only one page found!")
+        page = 1
+        stargazers = api.activity.list_stargazers_for_repo(
+            username,
+            repo_name,
+            headers={"Accept": "application/vnd.github.v3.star+json"},
+            per_page=100,
+            page=page,
+        )
+    else:
+        from_page = 1
+        to_page = num_pages
+        while from_page <= to_page:
+            page = (from_page + to_page) // 2
+            print(f"Searching from page {from_page} to {to_page}, looking at {page}")
+            stargazers = api.activity.list_stargazers_for_repo(
+                username,
+                repo_name,
+                headers={"Accept": "application/vnd.github.v3.star+json"},
+                per_page=100,
+                page=page,
+            )
+            top_year = int(stargazers[0].starred_at[:4])
+            bottom_year = int(stargazers[-1].starred_at[:4])
+            # print(top_year, bottom_year)
+
+            # TODO: Check if this works properly for 2021.
+            if top_year < year and bottom_year >= year:  # 2019 and 2020
+                print("Page:", page, "-> found it!")
+                break
+            elif bottom_year < year and top_year < year:  # before 2020
+                from_page = page + 1
+                print("Page:", page, "-> before 2020, setting from_page to:", from_page)
+            elif bottom_year >= year and top_year >= year:  # equal to or after 2020
+                to_page = page - 1
+                print("Page:", page, "-> before 2020, setting to_page to:", to_page)
+            else:
+                raise RuntimeError()
+            # print()
+
+    print("Year break is on page:", page)
+
+    # Calculate stars on all pages that are newer than `page`.
+    new_stars = (num_pages - page) * 100
+
+    # Add the stars on page.
+    for stargazer in stargazers:
+        if int(stargazer.starred_at[:4]) == year:
+            new_stars += 1
+    print("Total new stars:", new_stars)
+    return new_stars
+
+
+# METHOD 2: PAGED (with a D)
+# jrieke: 9 seconds, 29 API calls
+# chrieke: 23 seconds, 48 API calls
+# for stargazers in paged(
+#     api.activity.list_stargazers_for_repo,
+#     username,
+#     repo.name,
+#     per_page=100,
+#     headers={"Accept": "application/vnd.github.v3.star+json"},
+# ):
+#     for stargazer in stargazers:
+#         # print(stargazer)
+#         if int(stargazer.starred_at[:4]) == year:
+#             new_stars_per_repo[repo.name] += 1
