@@ -142,13 +142,18 @@ def get_stats(username, year, verbose=False):
                 print("-> needs closer inspection", end="")
             print()
 
-    progress = 0.2
-    yield calculate_summary_stats(), progress, ""
-
     # Inspect repo with most stars first.
     # TODO: If people have very large repos, it's probably better to do a medium sized
     # one first.
     repos_to_inspect = sorted(repos_to_inspect, key=lambda item: item[1], reverse=True)
+
+    # Yield some preliminary results.
+    # TODO: Handle case when there are no repos to inspect.
+    progress = 0.2
+    next_repo_name = repos_to_inspect[0][0]
+    if repos_to_inspect[0][1] > 1000:
+        next_repo_name += " (wow, so many ⭐, this takes a bit!)"
+    yield calculate_summary_stats(), progress, next_repo_name
 
     print()
     print("Closer inspection:")
@@ -210,7 +215,14 @@ def get_stats(username, year, verbose=False):
         )
 
         progress = 0.2 + 0.8 * ((i + 1) / len(repos_to_inspect))
-        yield calculate_summary_stats(), progress, repo_name
+        try:
+            next_repo_name = repos_to_inspect[i + 1][0]
+            if repos_to_inspect[i + 1][1] > 1000:
+                print("big one")
+                next_repo_name += " (wow, so many ⭐, this takes a bit!)"
+        except IndexError:  # last repo doesn't have next one
+            next_repo_name = ""
+        yield calculate_summary_stats(), progress, next_repo_name
 
     if verbose:
         print(f"New repos: {new_repos}")

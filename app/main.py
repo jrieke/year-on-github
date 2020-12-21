@@ -58,9 +58,9 @@ if username or clicked:
     contributions = github_reader.get_contributions(username, 2020)
     # stats = github_reader.get_stats(username, 2020)
 
-    for stats, progress, repo_name in github_reader.get_stats(username, 2020):
+    for stats, progress, next_repo_name in github_reader.get_stats(username, 2020):
         # print(stats)
-        progress_text.write(f"Parsing repo: {username}/{repo_name}")
+        progress_text.write(f"Parsing repo: {username}/{next_repo_name}")
         progress_bar.progress(progress)
         tweet.markdown(
             template.format(username=username, contributions=contributions, **stats),
