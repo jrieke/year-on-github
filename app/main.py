@@ -27,30 +27,40 @@ username = st.text_input("")
 # col1, col2, col3 = st.beta_columns(3)
 clicked = st.button("Get stats")
 
+
+template = """
+<p style="margin-top: 50px; margin: 50px; padding: 20px; border: 1px solid #4D9FEB; border-radius: 10px;">
+My year on <a href="https://twitter.com/github">@github</a> 2020 ✨ 
+<br><br>
+🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
+📬 Commits/Issues/PRs: {contributions}<br>
+⭐ New Stars: {new_stars}<br>
+🏝️ New Repos: {new_repos}<br>
+🔥 Hottest Repo (+{hottest_new_stars} stars): <a href="https://github.com/{hottest_full_name}">{hottest_full_name}</a>
+<br><br>
+Share your own: <a href="https://my-year-on-github.jrieke.com">my-year-on-github.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a>
+</p>
+"""
+
 if username or clicked:
 
-    with st.spinner(random.choice(SPINNER_LINES)):
+    # with st.spinner(random.choice(SPINNER_LINES)):
+    progress_bar = st.progress(0.)
+    tweet = st.empty()
 
-        # TODO: Cache the results of this call, so we don't query the same user all
-        # over again.
-        start_time = time.time()
-        stats = github_reader.get_stats(username, 2020)
-        st.write(f"Took {time.time() - start_time:.1f} s")
+    # TODO: Cache the results of this call, so we don't query the same user all
+    # over again.
+    start_time = time.time()
+    contributions = github_reader.get_contributions(username, 2020)
+    # stats = github_reader.get_stats(username, 2020)
 
-        st.markdown(
-            f"""
-            <p style="margin-top: 50px; margin: 50px; padding: 20px; border: 1px solid #4D9FEB; border-radius: 10px;">
-            My year on <a href="https://twitter.com/github">@github</a> 2020 ✨ 
-            <br><br>
-            🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
-            📬 Commits/Issues/PRs: {stats['contributions']}<br>
-            ⭐ New Stars: {stats['new_stars']}<br>
-            🏝️ New Repos: {stats['new_repos']}<br>
-            🔥 Hottest Repo (+{stats['hottest_new_stars']} stars): <a href="https://github.com/{stats['hottest_full_name']}">{stats['hottest_full_name']}</a>
-            <br><br>
-            Share your own: <a href="https://my-year-on-github.jrieke.com">my-year-on-github.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a>
-            </p>
-            """,
+    for stats, progress in github_reader.get_stats(username, 2020):
+        # print(stats)
+        progress_bar.progress(progress)
+        tweet.markdown(
+            template.format(username=username, contributions=contributions, **stats),
             unsafe_allow_html=True,
         )
+
+    st.write(f"Took {time.time() - start_time:.1f} s")
 
