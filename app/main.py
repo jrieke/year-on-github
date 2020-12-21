@@ -45,9 +45,18 @@ Share your stats: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> 
 # 🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
 # <a href="https://twitter.com/github">@github</a>
 
+
+@st.cache
+def cache_func(username):
+    time.sleep(5)
+    return 123
+
+
 if username or (clicked and username):
 
     "---"
+
+    st.write(cache_func(username))
 
     # with st.spinner(random.choice(SPINNER_LINES)):
     progress_text = st.empty()

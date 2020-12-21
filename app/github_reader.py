@@ -177,18 +177,18 @@ def get_stats(username, year, verbose=False):
         # jrieke: 6 seconds, 16 API calls
         # chrieke: 8 seconds, 19 API calls
         # tiangolo: 53 seconds, 124 API calls
-        
+
         # if stargazers_count < 0:
-            # METHOD 1: PAGES (with an S)
-            # jrieke: 6 seconds, 15 API calls
-            # chrieke: 7 seconds, 34 API calls
-            # tiangolo: 280 API calls, GIVES ERRORS OR STOPS
+        # METHOD 1: PAGES (with an S)
+        # jrieke: 6 seconds, 15 API calls
+        # chrieke: 7 seconds, 34 API calls
+        # tiangolo: 280 API calls, GIVES ERRORS OR STOPS
         #     print(" -> Using counting")
         #     new_stars_per_repo[repo_name] = find_stars_via_counting(
         #         username, repo_name, stargazers_count, year
         #     )
         # else:
-        
+
         # METHOD 3: BINARY SEARCH
         # jrieke: 6 seconds, 16 API calls
         # chrieke: 10 seconds, 19 API calls
@@ -260,7 +260,7 @@ def find_stars_via_counting(username, repo_name, stargazers_count, year):
         if int(stargazer.starred_at[:4]) == year:
             new_stars += 1
     print()
-    
+
     return new_stars
 
 
