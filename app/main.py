@@ -33,14 +33,15 @@ template = """
 My year on Github 2020 🧑‍💻✨ {username}
 <br><br>
 📬 Commits/Issues/PRs: {contributions}<br>
-⭐ New Stars: {new_stars}<br>
-🏝️ New Repos: {new_repos}<br>
-🔥 Hottest Repo (+{hottest_new_stars} stars): <a href="https://github.com/{hottest_full_name}">{hottest_full_name}</a>
+⭐ New stars: {new_stars}<br>
+🏝️ New repos: {new_repos}<br>
+🔥 Hottest repo (+{hottest_new_stars}): {hottest_full_name}
 <br><br>
-Share your own: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> based on <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a>
+Share your stats: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
 </p>
 """
 
+# 📅 Busiest Month: February
 # 🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
 # <a href="https://twitter.com/github">@github</a>
 
