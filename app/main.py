@@ -3,6 +3,8 @@ import time
 import streamlit as st
 import github_reader
 import ghapi
+import re
+import urllib
 
 
 # ghapi has a bug right now (https://github.com/jrieke/ghapi)
@@ -22,6 +24,7 @@ clicked = st.button("Get stats")
 divider = st.empty()
 progress_text = st.empty()
 progress_bar = st.empty()
+twitter_link_button = st.empty()
 tweet = st.empty()
 limits = st.empty()
 
@@ -55,6 +58,18 @@ My year on Github 2020 🧑‍💻✨ {username}
 Share your stats: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
 </p>
 """
+
+# Create twitter link template.
+twitter_link_template = re.sub("<.*?>", "", template)  # remove html tags
+twitter_link_template = twitter_link_template.strip()  # remove blank lines at start/end
+twitter_link_template = urllib.parse.quote(
+    twitter_link_template, safe="{}"
+)  # encode for url
+twitter_link_template = "https://twitter.com/intent/tweet?text=" + twitter_link_template
+
+
+# https://twitter.com/intent/tweet?text=My%20year%20on%20Github%202020%20%26%23129489%3B%26%238205%3B%26%23128187%3B%26%2310024%3B%20jrieke%0A%0A%26%23128236%3B%20Commits/Issues/PRs:%20707%0A%26%2311088%3B%20New%20stars:%20743%0A%26%23127965%3B%26%2365039%3B%20New%20repos:%209%0A%26%23128293%3B%20Hottest%20repo%20(+553):%20jrieke/traingenerator%0A%0AShare%20your%20stats:%20yearongh.jrieke.com%20|%20Built%20by%20@jrieke%20w/%20@streamlit%20@github%20|%20#github2020
+
 # 📅 Busiest Month: February
 # 🧑‍💻 User: <a href="https://github.com/{username}">{username}</a><br>
 # <a href="https://twitter.com/github">@github</a>
@@ -89,6 +104,7 @@ def stream_stats(username):
 if username or (clicked and username):
 
     # with st.spinner(random.choice(SPINNER_LINES)):
+    twitter_link_button.write("")
     divider.write("---")
     progress_text.write("Preparing...")
     progress_bar.progress(0)
@@ -106,6 +122,12 @@ if username or (clicked and username):
         f"Finished! Took {time.time() - start_time:.1f} s", unsafe_allow_html=True
     )
     progress_bar.empty()
+
+    twitter_link = twitter_link_template.format(username=username, **stats)
+    twitter_link_button.write(
+        f'<a href="{twitter_link}" target="_blank" rel="noopener noreferrer">Tweet</a>',
+        unsafe_allow_html=True,
+    )
 
     update_limits()
 
