@@ -268,6 +268,9 @@ def _find_stars_via_binary_search(username, repo_name, stargazers_count, year):
 
     def get_stargazers(page):
         """Retrieve a page of stargazers from the Github API."""
+        # TODO: This throws an error when parsing very big and old repos, because very
+        # old records are not returned. E.g. sindresorhus/awesome has 150k stars,
+        # but it stops after around 400 pages. fastcore.basics.HTTP422UnprocessableEntityError
         return api.activity.list_stargazers_for_repo(
             username,
             repo_name,
@@ -284,16 +287,12 @@ def _find_stars_via_binary_search(username, repo_name, stargazers_count, year):
     else:
         from_page = 1
         to_page = num_pages
+
         while from_page <= to_page:
             page = (from_page + to_page) // 2
             print(f"Searching from page {from_page} to {to_page}, looking at {page}")
-            stargazers = api.activity.list_stargazers_for_repo(
-                username,
-                repo_name,
-                headers={"Accept": "application/vnd.github.v3.star+json"},
-                per_page=100,
-                page=page,
-            )
+
+            stargazers = get_stargazers(page)
             top_year = int(stargazers[0].starred_at[:4])
             bottom_year = int(stargazers[-1].starred_at[:4])
             # print(top_year, bottom_year)
