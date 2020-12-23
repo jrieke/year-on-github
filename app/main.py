@@ -114,7 +114,7 @@ twitter_link_template = "https://twitter.com/intent/tweet?text=" + twitter_link_
 def stream_stats(username):
     for stats, progress, progress_msg in github_reader.stream_stats(username, 2020):
         progress_bar.progress(progress)
-        progress_text.write(progress_msg)
+        progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
         tweet.markdown(
             template.format(username=username, **stats), unsafe_allow_html=True,
         )
@@ -127,7 +127,7 @@ if username or (clicked and username):
     twitter_button.write("")
     # copy_button.write("")
     # divider.write("<br>", unsafe_allow_html=True)
-    progress_text.write("Preparing...")
+    progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
     progress_bar.progress(0)
 
     start_time = time.time()
