@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 import requests
 import time
 from datetime import datetime
+from fastcore.net import HTTP404NotFoundError
+
 # from joblib import Parallel, delayed
 import utils
 
@@ -26,6 +28,23 @@ def limit_cb(rem, quota):
 
 load_dotenv()
 api = GhApi(token=os.getenv("GH_TOKEN"), limit_cb=limit_cb)
+
+
+class UserNotFoundError(Exception):
+    pass
+
+
+def _get_user_info(username):
+    """Returns some basic information about the user."""
+    try:
+        user = api.users.get_by_username(username)
+    except HTTP404NotFoundError:
+        raise UserNotFoundError(
+            f"Received 404 error when searching for user: {username}"
+        )
+    avatar_url = user.avatar_url
+    is_org = user.type == "Organization"
+    return avatar_url, is_org
 
 
 def rate_limit_info():
@@ -94,6 +113,9 @@ def stream_stats(username, year, verbose=False):
     similar rate limit (which is not straightforward to calculate though).
     """
 
+    # Get some basic info about the user (and check that it exists!).
+    avatar_url, is_org = _get_user_info(username)
+
     # Fetch number of contributions through GraphQL API.
     contributions = _get_contributions(username, year, verbose=verbose)
 
@@ -113,6 +135,9 @@ def stream_stats(username, year, verbose=False):
             hottest_name, hottest_full_name, hottest_new_stars = None, None, None
 
         stats = {
+            "username": username,
+            "avatar_url": avatar_url,
+            "is_org": is_org,
             "contributions": contributions,
             "new_repos": new_repos,
             "new_stars": new_stars,

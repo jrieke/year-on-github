@@ -116,7 +116,7 @@ def stream_stats(username):
         progress_bar.progress(progress)
         progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
         tweet.markdown(
-            template.format(username=username, **stats), unsafe_allow_html=True,
+            template.format(**stats), unsafe_allow_html=True,
         )
     return stats
 
@@ -134,24 +134,31 @@ if username or (clicked and username):
     # TODO: When it's using cached results, the transition is very immediate / hard to
     # notice if trying multiple usernames after another. Make a 1 s delay or a better
     # transition.
-    stats = stream_stats(username)
-    tweet.markdown(
-        template.format(username=username, **stats), unsafe_allow_html=True,
-    )
+    try:
+        stats = stream_stats(username)
+        tweet.markdown(
+            template.format(**stats), unsafe_allow_html=True,
+        )
 
-    progress_text.write(
-        ""
-        # f"Finished! Took {time.time() - start_time:.1f} s", unsafe_allow_html=True
-    )
-    progress_bar.empty()
+        progress_text.write(
+            ""
+            # f"Finished! Took {time.time() - start_time:.1f} s", unsafe_allow_html=True
+        )
+        progress_bar.empty()
 
-    twitter_link = twitter_link_template.format(username=username, **stats)
-    twitter_button.write(
-        f'<a id="twitter-link" href="{twitter_link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
-        unsafe_allow_html=True,
-    )
+        twitter_link = twitter_link_template.format(**stats)
+        twitter_button.write(
+            f'<a id="twitter-link" href="{twitter_link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
+            unsafe_allow_html=True,
+        )
+    except github_reader.UserNotFoundError:
+        progress_text.write("")
+        progress_bar.empty()
+        tweet.error(
+            f":octopus: **Octocrap!** Couldn't find user {username}. Did you make a typo or [is this a bug](https://github.com/jrieke/my-year-on-github/issues)?"
+        )
 
-    # copy_text = copy_template.format(username=username, **stats)
+    # copy_text = copy_template.format(**stats)
     # # TODO: This requires streamlit-nightly at the moment, because there's a bug that
     # # shows bokeh charts twice. Remove streamlit-nightly from requirements as soon
     # # as this is resolved. See https://github.com/streamlit/streamlit/issues/2337
