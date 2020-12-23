@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import requests
 import time
 from datetime import datetime
+from joblib import Parallel, delayed
 import utils
 
 
@@ -218,6 +219,18 @@ def stream_stats(username, year, verbose=False):
         # TODO: Use stargazers_count to calculate more accurate progress.
         progress = 0.2 + 0.8 * ((i + 1) / len(repos_to_inspect))
         yield summary_stats(), progress, progress_msg(i + 1)
+
+    # TODO: Maybe do API calls in parallel like below. Seems to speed things up
+    # a bit on local computer (especially for large repos) but needs to be tested on
+    # server. Cons: Makes progress bar/text more difficult; harder to debug;
+    # might lead to problems if too many jobs are run at the same time.
+    # new_stars_list = Parallel(n_jobs=21)(
+    #     delayed(_find_stars_via_binary_search)(
+    #         username, repo_name, stargazers_count, year
+    #     )
+    #     for repo_name, stargazers_count in repos_to_inspect
+    # )
+    # new_stars_per_repo = dict(zip(repos_to_inspect, new_stars_list))
 
     if verbose:
         print(f"New repos: {new_repos}")
