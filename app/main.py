@@ -147,6 +147,9 @@ if username or (clicked and username):
     )
 
     copy_text = copy_template.format(username=username, **stats)
+    # TODO: This requires streamlit-nightly at the moment, because there's a bug that
+    # shows bokeh charts twice. Remove streamlit-nightly from requirements as soon
+    # as this is resolved. See https://github.com/streamlit/streamlit/issues/2337
     copy_button_bokeh = bokeh.models.widgets.Button(label="📋 Copy")
     copy_button_bokeh.js_on_event(
         "button_click",
