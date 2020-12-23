@@ -6,6 +6,7 @@ import ghapi
 import re
 import urllib
 import bokeh.models
+import utils
 
 
 # ghapi has a bug right now (https://github.com/jrieke/ghapi)
@@ -14,7 +15,7 @@ import bokeh.models
 # some new functions
 
 st.set_page_config(page_title="My Year On Github", page_icon=":octopus:")
-
+utils.local_css("static/local_styles.css")
 
 """
 # :octopus: My Year On Github
@@ -36,9 +37,10 @@ limits = st.empty()
 def update_limits():
     limits.write(
         """
-        <sup style="color: gray;">
-        Core: {core_remaining} (reset in {core_reset}) | GraphQL: {graphql_remaining} (reset in {graphql_reset})
-        </sup>
+        <p align="right" id="rate-limits">
+            Core: {core_remaining} (reset in {core_reset})<br>
+            GraphQL: {graphql_remaining} (reset in {graphql_reset})
+        </p>
         """.format(
             **github_reader.rate_limit_info()
         ),
@@ -50,8 +52,9 @@ update_limits()
 
 
 # TODO: Write updating stats in green.
+# TODO: Maybe pull the border out of the template.
 template = """
-<p style="margin-top: 20px; margin: 50px; padding: 20px; border: 1px solid #4D9FEB; border-radius: 10px;">
+<p id="tweet">
 My year on Github 2020 🧑‍💻✨ {username}
 <br><br>
 📬 Commits/Issues/PRs: {contributions}<br>
@@ -132,18 +135,19 @@ if username or (clicked and username):
     )
 
     progress_text.write(
-        f"Finished! Took {time.time() - start_time:.1f} s", unsafe_allow_html=True
+        ""
+        # f"Finished! Took {time.time() - start_time:.1f} s", unsafe_allow_html=True
     )
     progress_bar.empty()
 
     twitter_link = twitter_link_template.format(username=username, **stats)
     twitter_button.write(
-        f'<a href="{twitter_link}" target="_blank" rel="noopener noreferrer">Tweet</a>',
+        f'<a id="twitter-link" href="{twitter_link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet</p></a>',
         unsafe_allow_html=True,
     )
 
     copy_text = copy_template.format(username=username, **stats)
-    copy_button_bokeh = bokeh.models.widgets.Button(label="Copy")
+    copy_button_bokeh = bokeh.models.widgets.Button(label="📋 Copy")
     copy_button_bokeh.js_on_event(
         "button_click",
         bokeh.models.CustomJS(code=f'navigator.clipboard.writeText("{copy_text}")'),

@@ -1,0 +1,50 @@
+#tweet {
+  margin-top: 10px;
+  margin-bottom: 50px;
+  padding: 20px;
+  border: 1px solid #4d9feb;
+  border-radius: 10px;
+}
+
+#twitter-link {
+  text-decoration: none;
+}
+
+#twitter-button {
+  background-color: #4d9feb;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+}
+
+.bk-root .bk-btn-default {
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+div .bk-root .bk {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+#rate-limits {
+  color: lightgray;
+  font-size: 6pt;
+}
+
+@media (min-width: 600px) {
+  #tweet {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+
+  #twitter-button {
+    margin-left: 50px;
+  }
+
+  div .bk-root .bk {
+    margin-right: 50px !important;
+  }
+}
