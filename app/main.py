@@ -9,18 +9,17 @@ import bokeh.models
 import utils
 
 
+OCTOPUS_ICON = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png"
+
 # ghapi has a bug right now (https://github.com/jrieke/ghapi)
 # Install fix via: pip install -U git+https://github.com/jrieke/ghapi
 # Also, make sure that fasi is in the newest version because ghapi relies on
 # some new functions
 
-st.set_page_config(page_title="My Year On Github", page_icon=":octopus:")
+st.set_page_config(page_title="My Year On Github", page_icon=OCTOPUS_ICON)
 utils.local_css("static/local_styles.css")
 
-st.image(
-    "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png",
-    width=80,
-)
+st.image(OCTOPUS_ICON, width=100)
 """
 # Tweet your Github stats for 2020 ✨
 """
@@ -57,6 +56,8 @@ update_limits()
 
 # TODO: Write updating stats in green.
 # TODO: Maybe pull the border out of the template.
+# TODO: Write URL to hottest repo here? Would be cool to offer sth to click on,
+# but it always shows the link preview in the tweet.
 template = """
 <p id="tweet">
 My year on Github 2020 🧑‍💻✨ {username}
