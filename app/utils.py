@@ -27,7 +27,6 @@ def local_css(file_name):
     """Loads a local .css file into streamlit."""
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-        st.write("loaded css")
 
 
 def remote_css(url):
