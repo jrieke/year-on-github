@@ -23,7 +23,7 @@ st.image(
 )
 """
 # Tweet your Github stats for 2020 ✨
-"*Don't worry, we'll show a preview before you post ;)*
+*Don't worry, we'll show a preview before you post ;)*
 """
 # st.write("<br>", unsafe_allow_html=True)
 username = st.text_input("Your Github username")
