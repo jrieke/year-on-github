@@ -1,6 +1,6 @@
 #tweet {
-  margin-top: 10px;
-  margin-bottom: 50px;
+  margin-top: 15px;
+  margin-bottom: 20px;
   padding: 20px;
   border: 1px solid #4d9feb;
   border-radius: 10px;
@@ -16,6 +16,7 @@
   border-radius: 5px;
   color: white;
   text-decoration: none;
+  margin-bottom: 15px;
 }
 
 .bk-root .bk-btn-default {
@@ -32,6 +33,7 @@ div .bk-root .bk {
 #rate-limits {
   color: lightgray;
   font-size: 6pt;
+  margin-top: 50px;
 }
 
 @media (min-width: 640px) {

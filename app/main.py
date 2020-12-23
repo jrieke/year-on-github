@@ -31,10 +31,10 @@ clicked = st.button("Get stats")
 divider = st.empty()
 progress_text = st.empty()
 progress_bar = st.empty()
+tweet = st.empty()
 col1, col2 = st.beta_columns(2)
 twitter_button = col1.empty()
 copy_button = col2.empty()
-tweet = st.empty()
 limits = st.empty()
 
 
@@ -125,7 +125,7 @@ if username or (clicked and username):
     # with st.spinner(random.choice(SPINNER_LINES)):
     twitter_button.write("")
     copy_button.write("")
-    # divider.write("---")
+    # divider.write("<br>", unsafe_allow_html=True)
     progress_text.write("Preparing...")
     progress_bar.progress(0)
 
@@ -146,7 +146,7 @@ if username or (clicked and username):
 
     twitter_link = twitter_link_template.format(username=username, **stats)
     twitter_button.write(
-        f'<a id="twitter-link" href="{twitter_link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet</p></a>',
+        f'<a id="twitter-link" href="{twitter_link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
         unsafe_allow_html=True,
     )
 
