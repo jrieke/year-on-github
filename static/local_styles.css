@@ -2,6 +2,10 @@ a {
   text-decoration: none;
 }
 
+h1 {
+  line-height: 1.5;
+}
+
 #tweet {
   margin-top: 15px;
   margin-bottom: 20px;
