@@ -22,10 +22,10 @@ st.image(
     width=80,
 )
 """
-# Tweet your Github stats for 2020 ✨
-
-*Don't worry, we'll show a preview before you post ;)*
+# Tweet your Github stats for 2020 ✨"
+"*Don't worry, we'll show a preview before you post ;)*
 """
+# st.write("<br>", unsafe_allow_html=True)
 username = st.text_input("Your Github username")
 clicked = st.button("Get stats")
 divider = st.empty()
