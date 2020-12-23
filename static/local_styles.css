@@ -8,15 +8,16 @@ a {
 
 h1 {
   line-height: 1.5;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 button {
   width: 100% !important;
+  margin-bottom: 15px !important;
 }
 
 #tweet {
-  margin-top: 15px;
+  /* margin-top: 15px; */
   /* margin-bottom: 20px; */
   padding: 20px;
   border: 1px solid #4d9feb;
@@ -50,7 +51,7 @@ div .bk-root .bk {
 #rate-limits {
   color: lightgray;
   font-size: 6pt;
-  margin-top: 30px;
+  margin-top: 25px;
 }
 
 @media (min-width: 640px) {
