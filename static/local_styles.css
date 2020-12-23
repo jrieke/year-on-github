@@ -34,17 +34,17 @@ div .bk-root .bk {
   font-size: 6pt;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 640px) {
   #tweet {
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 120px;
+    margin-right: 120px;
   }
 
   #twitter-button {
-    margin-left: 50px;
+    margin-left: 120px;
   }
 
   div .bk-root .bk {
-    margin-right: 50px !important;
+    margin-right: 120px !important;
   }
 }

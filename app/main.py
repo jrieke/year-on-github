@@ -17,12 +17,16 @@ import utils
 st.set_page_config(page_title="My Year On Github", page_icon=":octopus:")
 utils.local_css("static/local_styles.css")
 
+st.image(
+    "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png",
+    width=80,
+)
 """
-# :octopus: My Year On Github
+# Tweet your Github stats for 2020 ✨
 
-Share your Github stats for 2020 on Twitter. Just enter your Github username below.
+*Don't worry, we'll show a preview before you post ;)*
 """
-username = st.text_input("")
+username = st.text_input("Your Github username")
 clicked = st.button("Get stats")
 divider = st.empty()
 progress_text = st.empty()
@@ -121,7 +125,7 @@ if username or (clicked and username):
     # with st.spinner(random.choice(SPINNER_LINES)):
     twitter_button.write("")
     copy_button.write("")
-    divider.write("---")
+    # divider.write("---")
     progress_text.write("Preparing...")
     progress_bar.progress(0)
 
