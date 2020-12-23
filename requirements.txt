@@ -1,5 +1,6 @@
 requests==2.24.0
-streamlit==0.72.0
-git+git://github.com/jrieke/ghapi#egg=ghapi
-Pillow==8.0.1
+ghapi==0.1.14
+streamlit_nightly==0.73.2.dev20201221
+bokeh==2.2.3
 python-dotenv==0.15.0
+streamlit==0.73.1
