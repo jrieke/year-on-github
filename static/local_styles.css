@@ -1,14 +1,23 @@
+.reportview-container .main .block-container {
+  max-width: 400px;
+}
+
 a {
   text-decoration: none;
 }
 
 h1 {
   line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+button {
+  width: 100% !important;
 }
 
 #tweet {
   margin-top: 15px;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   padding: 20px;
   border: 1px solid #4d9feb;
   border-radius: 10px;
@@ -41,20 +50,20 @@ div .bk-root .bk {
 #rate-limits {
   color: lightgray;
   font-size: 6pt;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 @media (min-width: 640px) {
   #tweet {
-    margin-left: 120px;
-    margin-right: 120px;
+    /* margin-left: 120px; */
+    /* margin-right: 120px; */
   }
 
   #twitter-button {
-    margin-left: 120px;
+    /* margin-left: 120px; */
   }
 
   div .bk-root .bk {
-    margin-right: 120px !important;
+    /* margin-right: 120px !important; */
   }
 }

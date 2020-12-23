@@ -23,18 +23,18 @@ st.image(
 )
 """
 # Tweet your Github stats for 2020 ✨
-*Don't worry, we'll show a preview before you post ;)*
 """
 # st.write("<br>", unsafe_allow_html=True)
 username = st.text_input("Your Github username")
-clicked = st.button("Get stats")
+clicked = st.button("Show preview")
 divider = st.empty()
 progress_text = st.empty()
 progress_bar = st.empty()
 tweet = st.empty()
-col1, col2 = st.beta_columns(2)
-twitter_button = col1.empty()
-copy_button = col2.empty()
+# col1, col2 = st.beta_columns(2)
+# twitter_button = col1.empty()
+# copy_button = col2.empty()
+twitter_button = st.empty()
 limits = st.empty()
 
 
@@ -81,9 +81,9 @@ twitter_link_template = "https://twitter.com/intent/tweet?text=" + twitter_link_
 
 
 # Create template to copy to clipboard.
-copy_template = re.sub("<.*?>", "", template)  # remove html tags
-copy_template = copy_template.strip()  # remove blank linkes at start/end
-copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
+# copy_template = re.sub("<.*?>", "", template)  # remove html tags
+# copy_template = copy_template.strip()  # remove blank linkes at start/end
+# copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
 
 
 # st.bokeh_chart(copy_button)
@@ -124,7 +124,7 @@ if username or (clicked and username):
 
     # with st.spinner(random.choice(SPINNER_LINES)):
     twitter_button.write("")
-    copy_button.write("")
+    # copy_button.write("")
     # divider.write("<br>", unsafe_allow_html=True)
     progress_text.write("Preparing...")
     progress_bar.progress(0)
@@ -150,15 +150,15 @@ if username or (clicked and username):
         unsafe_allow_html=True,
     )
 
-    copy_text = copy_template.format(username=username, **stats)
-    # TODO: This requires streamlit-nightly at the moment, because there's a bug that
-    # shows bokeh charts twice. Remove streamlit-nightly from requirements as soon
-    # as this is resolved. See https://github.com/streamlit/streamlit/issues/2337
-    copy_button_bokeh = bokeh.models.widgets.Button(label="📋 Copy")
-    copy_button_bokeh.js_on_event(
-        "button_click",
-        bokeh.models.CustomJS(code=f'navigator.clipboard.writeText("{copy_text}")'),
-    )
-    copy_button.bokeh_chart(copy_button_bokeh)
+    # copy_text = copy_template.format(username=username, **stats)
+    # # TODO: This requires streamlit-nightly at the moment, because there's a bug that
+    # # shows bokeh charts twice. Remove streamlit-nightly from requirements as soon
+    # # as this is resolved. See https://github.com/streamlit/streamlit/issues/2337
+    # copy_button_bokeh = bokeh.models.widgets.Button(label="📋 Copy")
+    # copy_button_bokeh.js_on_event(
+    #     "button_click",
+    #     bokeh.models.CustomJS(code=f'navigator.clipboard.writeText("{copy_text}")'),
+    # )
+    # copy_button.bokeh_chart(copy_button_bokeh)
 
     update_limits()
