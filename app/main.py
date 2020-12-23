@@ -16,7 +16,7 @@ OCTOPUS_ICON = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumb
 # Also, make sure that fasi is in the newest version because ghapi relies on
 # some new functions
 
-st.set_page_config(page_title="My Year On Github", page_icon=OCTOPUS_ICON)
+st.set_page_config(page_title="My year on Github 2020", page_icon=OCTOPUS_ICON)
 utils.local_css("static/local_styles.css")
 
 st.image(OCTOPUS_ICON, width=100)
