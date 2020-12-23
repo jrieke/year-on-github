@@ -29,11 +29,11 @@ clicked = st.button("Show preview")
 divider = st.empty()
 progress_text = st.empty()
 progress_bar = st.empty()
-tweet = st.empty()
+tweet_box = st.empty()
 # col1, col2 = st.beta_columns(2)
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
-twitter_button = st.empty()
+tweet_button = st.empty()
 limits = st.empty()
 
 
@@ -54,11 +54,13 @@ def update_limits():
 update_limits()
 
 
+# TODO: Maybe refactor templating stuff to separate file.
 # TODO: Write updating stats in green.
 # TODO: Maybe pull the border out of the template.
 # TODO: Write URL to hottest repo here? Would be cool to offer sth to click on,
-# but it always shows the link preview in the tweet.
-template = """
+#   but it always shows the link preview in the tweet.
+# TODO: Twitter doesn't know 🧑‍💻 emoji, maybe replace it.
+user_template = """
 <p id="tweet">
 My year on Github 2020 🧑‍💻✨ {username}
 <br><br>
@@ -71,14 +73,38 @@ Share your stats: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> 
 </p>
 """
 
+org_template = """
+<p id="tweet">
+Our year on Github 2020 🧑‍💻✨ {username}
+<br><br>
+⭐ New stars: {new_stars}<br>
+🏝️ New repos: {new_repos}<br>
+🔥 Hottest repo (+{hottest_new_stars}): {hottest_full_name}
+<br><br>
+Share your stats: <a href="https://yearongh.jrieke.com">yearongh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
+</p>
+"""
 
-# Create twitter link template.
-twitter_link_template = re.sub("<.*?>", "", template)  # remove html tags
-twitter_link_template = twitter_link_template.strip()  # remove blank lines at start/end
-twitter_link_template = urllib.parse.quote(
-    twitter_link_template, safe="{}"
-)  # encode for url
-twitter_link_template = "https://twitter.com/intent/tweet?text=" + twitter_link_template
+
+def show_tweet(stats):
+    """Generate tweet based on `stats` and show the text plus a "Tweet it!" button."""
+
+    # Create and show tweet.
+    if stats["is_org"]:
+        tweet = org_template.format(**stats)
+    else:
+        tweet = user_template.format(**stats)
+    tweet_box.write(tweet, unsafe_allow_html=True)
+
+    # Create tweet link and show as button.
+    link = re.sub("<.*?>", "", tweet)  # remove html tags
+    link = link.strip()  # remove blank lines at start/end
+    link = urllib.parse.quote(link)  # encode for url
+    link = "https://twitter.com/intent/tweet?text=" + link
+    tweet_button.write(
+        f'<a id="twitter-link" href="{link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
+        unsafe_allow_html=True,
+    )
 
 
 # Create template to copy to clipboard.
@@ -115,16 +141,13 @@ def stream_stats(username):
     for stats, progress, progress_msg in github_reader.stream_stats(username, 2020):
         progress_bar.progress(progress)
         progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
-        tweet.markdown(
-            template.format(**stats), unsafe_allow_html=True,
-        )
+        show_tweet(stats)
     return stats
 
 
 if username or (clicked and username):
 
-    # with st.spinner(random.choice(SPINNER_LINES)):
-    twitter_button.write("")
+    tweet_button.write("")
     # copy_button.write("")
     # divider.write("<br>", unsafe_allow_html=True)
     progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
@@ -135,26 +158,16 @@ if username or (clicked and username):
     # notice if trying multiple usernames after another. Make a 1 s delay or a better
     # transition.
     try:
+        # If using cached results, this returns immediately, i.e. we need to show
+        # the tweet again below.
         stats = stream_stats(username)
-        tweet.markdown(
-            template.format(**stats), unsafe_allow_html=True,
-        )
-
-        progress_text.write(
-            ""
-            # f"Finished! Took {time.time() - start_time:.1f} s", unsafe_allow_html=True
-        )
         progress_bar.empty()
-
-        twitter_link = twitter_link_template.format(**stats)
-        twitter_button.write(
-            f'<a id="twitter-link" href="{twitter_link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
-            unsafe_allow_html=True,
-        )
-    except github_reader.UserNotFoundError:
         progress_text.write("")
+        show_tweet(stats)
+    except github_reader.UserNotFoundError:
         progress_bar.empty()
-        tweet.error(
+        progress_text.write("")
+        tweet_box.error(
             f":octopus: **Octocrap!** Couldn't find user {username}. Did you make a typo or [is this a bug](https://github.com/jrieke/my-year-on-github/issues)?"
         )
 

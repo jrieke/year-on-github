@@ -117,7 +117,11 @@ def stream_stats(username, year, verbose=False):
     avatar_url, is_org = _get_user_info(username)
 
     # Fetch number of contributions through GraphQL API.
-    contributions = _get_contributions(username, year, verbose=verbose)
+    if is_org:
+        # TODO: Maybe count commits (+ maybe issues/prs) for this year across all repos.
+        contributions = 0
+    else:
+        contributions = _get_contributions(username, year, verbose=verbose)
 
     new_repos = 0
     new_stars_per_repo = defaultdict(lambda: 0)
@@ -158,7 +162,8 @@ def stream_stats(username, year, verbose=False):
     # Use `paged` instead of `pages` here because most users will have <100 repos anyway
     # and getting the number of pages would require an additional API call.
     print("Quick inspection:")
-    for repos in paged(api.repos.list_for_user, username, per_page=100):
+    endpoint = api.repos.list_for_org if is_org else api.repos.list_for_user
+    for repos in paged(endpoint, username, per_page=100,):
         print("Got one page of repos:", time.time() - start_time)
         for repo in repos:
             print(
