@@ -29,6 +29,8 @@ clicked = st.button("Show preview")
 divider = st.empty()
 progress_text = st.empty()
 progress_bar = st.empty()
+# col1, col2 = st.beta_columns([0.15, 0.85])
+# avatar = col1.empty()
 tweet_box = st.empty()
 # col1, col2 = st.beta_columns(2)
 # twitter_button = col1.empty()
@@ -95,6 +97,11 @@ def show_tweet(stats):
     else:
         tweet = user_template.format(**stats)
     tweet_box.write(tweet, unsafe_allow_html=True)
+    # avatar.image(stats["avatar_url"], use_column_width=True)
+    # avatar.write(
+    #     f'<img id="avatar" src="{stats["avatar_url"]}">',
+    #     unsafe_allow_html=True,
+    # )
 
     # Create tweet link and show as button.
     link = re.sub("<.*?>", "", tweet)  # remove html tags

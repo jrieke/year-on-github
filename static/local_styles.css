@@ -11,6 +11,11 @@ h1 {
   margin-bottom: 15px;
 }
 
+/* #avatar {
+  border-radius: 50%;
+  width: 100%;
+} */
+
 button {
   width: 100% !important;
   margin-bottom: 15px !important;
