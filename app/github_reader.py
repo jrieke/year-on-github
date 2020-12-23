@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import requests
 import time
 from datetime import datetime
-from joblib import Parallel, delayed
+# from joblib import Parallel, delayed
 import utils
 
 
