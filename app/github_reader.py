@@ -123,7 +123,7 @@ def _get_contributions(username, year, verbose=False):
     return contributions, external_repos
 
 
-def stream_stats(username, year, verbose=False):
+def stream_stats(username, year, count_external_repos=None, verbose=False):
     """
     Generator that reads user stats from Github and yields them while reading.
     
@@ -154,11 +154,12 @@ def stream_stats(username, year, verbose=False):
         new_stars = sum(new_stars_per_repo.values())
         if new_stars > 0:
             hottest = max(new_stars_per_repo.items(), key=lambda item: item[1])
-            hottest_name, hottest_new_stars = hottest
-            hottest_full_name = username + "/" + hottest_name
+            # hottest_name, hottest_new_stars = hottest
+            # hottest_full_name = username + "/" + hottest_name
+            hottest_full_name, hottest_new_stars = hottest
         else:
             # TODO: Select repo with most stars overall instead, or just the first one.
-            hottest_name, hottest_full_name, hottest_new_stars = None, None, None
+            hottest_full_name, hottest_new_stars = None, None
 
         stats = {
             "username": username,
@@ -167,7 +168,7 @@ def stream_stats(username, year, verbose=False):
             "contributions": contributions,
             "new_repos": new_repos,
             "new_stars": new_stars,
-            "hottest_name": hottest_name,
+            # "hottest_name": hottest_name,
             "hottest_full_name": hottest_full_name,
             "hottest_new_stars": hottest_new_stars,
             "external_repos": external_repos,
@@ -190,7 +191,7 @@ def stream_stats(username, year, verbose=False):
         print("Got one page of repos:", time.time() - start_time)
         for repo in repos:
             print(
-                f"{repo.name[:30]:30}: created: {repo.created_at}, stars: {repo.stargazers_count}",
+                f"{repo.full_name[:30]:30}: created: {repo.created_at}, stars: {repo.stargazers_count}",
                 end="",
             )
 
@@ -201,14 +202,44 @@ def stream_stats(username, year, verbose=False):
             # Count new stars (several options to minimize time & amount of API calls).
             if repo.stargazers_count == 0:
                 # Option 1: 0 stars, so also 0 new stars. Takes e-6 s.
-                new_stars_per_repo[repo.name] = 0
+                new_stars_per_repo[repo.full_name] = 0
             elif int(repo.created_at[:4]) == year:
                 # Option 2: Created this year, therefore take all stars. Takes e-5 s.
-                new_stars_per_repo[repo.name] = repo.stargazers_count
+                new_stars_per_repo[repo.full_name] = repo.stargazers_count
             else:
                 # Option 3: Save for later inspection (see below; looks at all
                 # stargazers in detail).
-                repos_to_inspect.append((repo.name, repo.stargazers_count))
+                repos_to_inspect.append((repo.full_name, repo.stargazers_count))
+                print("-> closer inspection", end="")
+            print()
+
+    # TODO: Refactor all of this.
+    print("Quick inspection of external repos:")
+    if count_external_repos is not None:
+        for full_name in count_external_repos:
+
+            # TODO: Get these numbers already in GraphQL query above and store them.
+            repo = api.repos.get(*full_name.split("/"))
+            print(
+                f"{repo.full_name[:30]:30}: created: {repo.created_at}, stars: {repo.stargazers_count}",
+                end="",
+            )
+
+            # Check if repo is new. Takes e-7 s.
+            if int(repo.created_at[:4]) == year:
+                new_repos += 1
+
+            # Count new stars (several options to minimize time & amount of API calls).
+            if repo.stargazers_count == 0:
+                # Option 1: 0 stars, so also 0 new stars. Takes e-6 s.
+                new_stars_per_repo[repo.full_name] = 0
+            elif int(repo.created_at[:4]) == year:
+                # Option 2: Created this year, therefore take all stars. Takes e-5 s.
+                new_stars_per_repo[repo.full_name] = repo.stargazers_count
+            else:
+                # Option 3: Save for later inspection (see below; looks at all
+                # stargazers in detail).
+                repos_to_inspect.append((repo.full_name, repo.stargazers_count))
                 print("-> closer inspection", end="")
             print()
 
@@ -220,7 +251,7 @@ def stream_stats(username, year, verbose=False):
     def progress_msg(next_repo_idx):
         """Generate progress message for the next repo in closer inspection."""
         try:
-            msg = f"Parsing repo: {username}/{repos_to_inspect[next_repo_idx][0]}"
+            msg = f"Parsing repo: {repos_to_inspect[next_repo_idx][0]}"
             if repos_to_inspect[next_repo_idx][1] > 1000:
                 msg += " (wow, so many ⭐, this takes a bit!)"
         except IndexError:  # last repo doesn't have next one
@@ -232,12 +263,12 @@ def stream_stats(username, year, verbose=False):
 
     print()
     print("Closer inspection:")
-    for i, (repo_name, stargazers_count) in enumerate(repos_to_inspect):
+    for i, (full_name, stargazers_count) in enumerate(repos_to_inspect):
         # TODO: Maybe set a maximum number of API calls/pages here. Then again,
         # even for the repo with the most stars on Github (300k), the binary search
         # shouldn't take more than 19 steps.
         print(
-            f"{repo_name[:30]:30}: stars: ({stargazers_count})", end="",
+            f"{full_name[:30]:30}: stars: ({stargazers_count})", end="",
         )
         stars_start_time = time.time()
 
@@ -262,8 +293,9 @@ def stream_stats(username, year, verbose=False):
         # chrieke: 10 seconds, 19 API calls
         # tiangolo: 55 seconds, 94 API calls
         print(" -> binary search")
-        new_stars_per_repo[repo_name] = _find_stars_via_binary_search(
-            username, repo_name, stargazers_count, year
+        # TODO: Maybe pass full_name to the search method directly.
+        new_stars_per_repo[full_name] = _find_stars_via_binary_search(
+            *full_name.split("/"), stargazers_count, year
         )
 
         print("Took", time.time() - stars_start_time)

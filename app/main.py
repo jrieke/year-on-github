@@ -165,12 +165,14 @@ def show_tweet(stats):
 # hashing entirely by passing hash_funcs={github_reader.get_stats: lambda _: None}.
 # But this will probably still the delete the cache if I re-deploy.
 @st.cache(hash_funcs={ghapi.core._GhVerb: lambda _: None})
-def stream_stats(username):
+def stream_stats(username, count_external_repos=None):
 
     progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
     progress_bar.progress(0)
 
-    for stats, progress, progress_msg in github_reader.stream_stats(username, 2020):
+    for stats, progress, progress_msg in github_reader.stream_stats(
+        username, 2020, count_external_repos
+    ):
         progress_bar.progress(progress)
         progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
         show_tweet(stats)
@@ -189,20 +191,30 @@ if username or (clicked and username):
     try:
         # If using cached results, this returns immediately, i.e. we need to show
         # the tweet again below.
-        stats = stream_stats(username)
+        stats = stream_stats(username, [])
         progress_bar.empty()
         progress_text.write("")
         show_tweet(stats)
 
         # TODO: Doing this here makes the checkbox disappear for a moment, do it further
         # up. But: user shouldn't select this before stats have finished streaming.
+        count_external_repos = []
         count_external = checkbox_count_external.checkbox(
             "Count stars of external repos I contributed to"
         )
         if count_external:
             with checkboxes_external:
-                for repo in stats["external_repos"]:
-                    st.checkbox(repo)
+                for full_name in stats["external_repos"]:
+                    if st.checkbox(full_name):
+                        count_external_repos.append(full_name)
+
+        # TODO: This is done again here for now because everything is returned in stats.
+        #   Get external_repos before querying for stats, then remove this.
+        stats = stream_stats(username, count_external_repos)
+        progress_bar.empty()
+        progress_text.write("")
+        show_tweet(stats)
+
         # with checkbox_count_external.beta_expander(
         #     "Count stars of external repos I contributed to"
         # ):
