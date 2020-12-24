@@ -86,6 +86,18 @@ def _get_contributions(username, year, verbose=False):
                 contributionCalendar {{
                     totalContributions
                 }}
+                commitContributionsByRepository {{
+                    repository {{
+                        owner {{
+                            login
+                        }}
+                        name
+                        stargazerCount
+                    }}
+                    contributions {{
+                        totalCount
+                    }}
+                }}
             }}
         }}
     }}"""
@@ -93,15 +105,22 @@ def _get_contributions(username, year, verbose=False):
     # Make POST request to GraphQL API. Takes 0.3-0.6 s.
     response = requests.post(url, headers=headers, json={"query": query})
     # TODO: Filter bad response.
-    contributions = response.json()["data"]["user"]["contributionsCollection"][
-        "contributionCalendar"
-    ]["totalContributions"]
+    collection = response.json()["data"]["user"]["contributionsCollection"]
+    contributions = collection["contributionCalendar"]["totalContributions"]
+    # Repos are already sorted from GraphQL by number of contributions.
+    external_repos = [
+        item["repository"]["owner"]["login"] + "/" + item["repository"]["name"]
+        for item in collection["commitContributionsByRepository"]
+        if item["repository"]["owner"]["login"] != username
+    ]
+
+    print(external_repos)
 
     if verbose:
         print(f"Contributions: {contributions}")
 
     print("Read contributions:", time.time() - start_time)
-    return contributions
+    return contributions, external_repos
 
 
 def stream_stats(username, year, verbose=False):
@@ -120,8 +139,11 @@ def stream_stats(username, year, verbose=False):
     if is_org:
         # TODO: Maybe count commits (+ maybe issues/prs) for this year across all repos.
         contributions = 0
+        external_repos = []
     else:
-        contributions = _get_contributions(username, year, verbose=verbose)
+        contributions, external_repos = _get_contributions(
+            username, year, verbose=verbose
+        )
 
     new_repos = 0
     new_stars_per_repo = defaultdict(lambda: 0)
@@ -148,6 +170,7 @@ def stream_stats(username, year, verbose=False):
             "hottest_name": hottest_name,
             "hottest_full_name": hottest_full_name,
             "hottest_new_stars": hottest_new_stars,
+            "external_repos": external_repos,
         }
         return stats
 

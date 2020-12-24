@@ -26,6 +26,26 @@ st.image(OCTOPUS_ICON, width=100)
 # st.write("<br>", unsafe_allow_html=True)
 username = st.text_input("Your Github username")
 clicked = st.button("Show preview")
+
+checkbox_count_external = st.empty()
+_, checkboxes_external = st.beta_columns([0.04, 0.96])
+# if username or (clicked and username):
+# st.write(
+#     "<sub>Seems like you contributed to some repos not owned by you! Which ones of these do you want to count?</sub>",
+#     unsafe_allow_html=True,
+# )
+# st.checkbox("ml-tooling/universal-build")
+# st.checkbox("ml-tooling/ml-platform")
+# st.checkbox("ml-tooling/lazydocs")
+# with st.beta_expander("Show 5 more"):
+#     st.checkbox("cotect/cotect")
+#     st.checkbox("ml-tooling/best-of-update-action")
+#     st.checkbox("ml-tooling/best-of-ml-python")
+# with st.beta_expander("Include external repos (0 selected)"):
+#     st.write(
+#         "You contributed to 6 repos from others in 2020! Check all that you want to include in your stats."
+#     )
+
 divider = st.empty()
 progress_text = st.empty()
 progress_bar = st.empty()
@@ -39,7 +59,7 @@ tweet_button = st.empty()
 limits = st.empty()
 
 
-def update_limits():
+def show_limits():
     limits.write(
         """
         <p align="right" id="rate-limits">
@@ -53,7 +73,7 @@ def update_limits():
     )
 
 
-update_limits()
+show_limits()
 
 
 # TODO: Maybe refactor templating stuff to separate file.
@@ -61,7 +81,8 @@ update_limits()
 # TODO: Maybe pull the border out of the template.
 # TODO: Write URL to hottest repo here? Would be cool to offer sth to click on,
 #   but it always shows the link preview in the tweet.
-# TODO: Twitter doesn't know 🧑‍💻 emoji, maybe replace it.
+# TODO: Encoding the 🧑‍💻 emoji in a link works in the browser but not on Android. Problem
+#   is probably the Twitter app, see if there's a workaround or replace emoji.
 user_template = """
 <p id="tweet">
 My year on Github 2020 🧑‍💻✨ {username}
@@ -145,6 +166,10 @@ def show_tweet(stats):
 # But this will probably still the delete the cache if I re-deploy.
 @st.cache(hash_funcs={ghapi.core._GhVerb: lambda _: None})
 def stream_stats(username):
+
+    progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
+    progress_bar.progress(0)
+
     for stats, progress, progress_msg in github_reader.stream_stats(username, 2020):
         progress_bar.progress(progress)
         progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
@@ -153,12 +178,9 @@ def stream_stats(username):
 
 
 if username or (clicked and username):
-
     tweet_button.write("")
     # copy_button.write("")
     # divider.write("<br>", unsafe_allow_html=True)
-    progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
-    progress_bar.progress(0)
 
     start_time = time.time()
     # TODO: When it's using cached results, the transition is very immediate / hard to
@@ -171,6 +193,21 @@ if username or (clicked and username):
         progress_bar.empty()
         progress_text.write("")
         show_tweet(stats)
+
+        # TODO: Doing this here makes the checkbox disappear for a moment, do it further
+        # up. But: user shouldn't select this before stats have finished streaming.
+        count_external = checkbox_count_external.checkbox(
+            "Count stars of external repos I contributed to"
+        )
+        if count_external:
+            with checkboxes_external:
+                for repo in stats["external_repos"]:
+                    st.checkbox(repo)
+        # with checkbox_count_external.beta_expander(
+        #     "Count stars of external repos I contributed to"
+        # ):
+        #     for repo in stats["external_repos"]:
+        #         st.checkbox(repo)
     except github_reader.UserNotFoundError:
         progress_bar.empty()
         progress_text.write("")
@@ -189,4 +226,4 @@ if username or (clicked and username):
     # )
     # copy_button.bokeh_chart(copy_button_bokeh)
 
-    update_limits()
+    show_limits()

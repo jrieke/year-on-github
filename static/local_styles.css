@@ -18,12 +18,16 @@ h1 {
 
 button {
   width: 100% !important;
-  margin-bottom: 15px !important;
+  margin-bottom: 20px !important;
   border-color: #bfbfbf !important;
 }
 
+.stCheckbox {
+  margin-bottom: -5px;
+}
+
 #tweet {
-  /* margin-top: 15px; */
+  margin-top: -10px;
   /* margin-bottom: 20px; */
   padding: 20px;
   border: 1px solid #4d9feb;
