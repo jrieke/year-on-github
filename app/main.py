@@ -26,9 +26,27 @@ st.image(OCTOPUS_ICON, width=100)
 # st.write("<br>", unsafe_allow_html=True)
 username = st.text_input("Your Github username")
 clicked = st.button("Show preview")
-
-checkbox_count_external = st.empty()
+checkbox_count = st.empty()
 _, checkboxes_external = st.beta_columns([0.04, 0.96])
+
+
+def show_checkboxes_external(external_repos):
+    include_external = []
+    if external_repos:
+        count = checkbox_count.checkbox(
+            "Count stars of external repos I contributed to"
+        )
+        if count:
+            with checkboxes_external:
+                for repo in external_repos:
+                    if checkboxes_external.checkbox(repo):
+                        include_external.append(repo)
+    return include_external
+
+
+# TODO: Make this a bit nicer, e.g. with a function that plots this dynamically.
+# checkbox_count_external = st.empty()
+# _, checkboxes_external = st.beta_columns([0.04, 0.96])
 # if username or (clicked and username):
 # st.write(
 #     "<sub>Seems like you contributed to some repos not owned by you! Which ones of these do you want to count?</sub>",
@@ -56,24 +74,22 @@ tweet_box = st.empty()
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
 tweet_button = st.empty()
-limits = st.empty()
+fineprint = st.empty()
 
 
-def show_limits():
-    limits.write(
-        """
-        <p align="right" id="rate-limits">
+def show_fineprint(runtime=None):
+    limits = github_reader.rate_limit_info()
+    s = """
+        <p align="right" id="fineprint">
             Core: {core_remaining} (reset in {core_reset})<br>
-            GraphQL: {graphql_remaining} (reset in {graphql_reset})
-        </p>
-        """.format(
-            **github_reader.rate_limit_info()
-        ),
-        unsafe_allow_html=True,
-    )
+            GraphQL: {graphql_remaining} (reset in {graphql_reset})<br>
+        """.format(**limits)
+    if runtime is not None:
+        s += f"Runtime: {runtime:.2f} s"
+    s += "</p>"
+    fineprint.write(s, unsafe_allow_html=True)
 
-
-show_limits()
+show_fineprint()
 
 
 # TODO: Maybe refactor templating stuff to separate file.
@@ -88,9 +104,9 @@ user_template = """
 My year on Github 2020 🧑‍💻✨ {username}
 <br><br>
 📬 Commits/Issues/PRs: {contributions}<br>
+🏝️ Repos contributed to: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
-🏝️ New repos: {new_repos}<br>
-🔥 Hottest repo (+{hottest_new_stars}): {hottest_full_name}
+🔥 Hottest repo: {hottest_repo}
 <br><br>
 Share your stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
 </p>
@@ -101,12 +117,36 @@ org_template = """
 Our year on Github 2020 🧑‍💻✨ {username}
 <br><br>
 ⭐ New stars: {new_stars}<br>
-🏝️ New repos: {new_repos}<br>
-🔥 Hottest repo (+{hottest_new_stars}): {hottest_full_name}
+🔥 Hottest repo: {hottest_repo}
 <br><br>
 Share your stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
 </p>
 """
+
+
+# class CacheTester:
+
+#     # Using st.cache here doesn't work, because it doesn't set self.x = x!!!
+#     def __init__(self, x):
+#         self.x = x
+
+#     # Using st.cache in her works but note that it also reruns if ANYTHING in self changed!
+#     @st.cache
+#     def get(self, y):
+#         time.sleep(4)
+#         print("")
+#         return self.x * y
+
+
+# cache_clicked = st.button("Test the cache")
+# if cache_clicked:
+#     # st.write(test_cache(3))
+#     # st.write(test_cache(2))
+#     # st.write(test_cache(3))
+#     st.write(CacheTester(1).get(1))
+#     st.write(CacheTester(2).get(2))
+#     st.write(CacheTester(1).get(1))
+#     st.write(CacheTester(3).get(1))
 
 
 def show_tweet(stats):
@@ -164,19 +204,19 @@ def show_tweet(stats):
 # impact the API results). Either store values in a proper database or try out disabling
 # hashing entirely by passing hash_funcs={github_reader.get_stats: lambda _: None}.
 # But this will probably still the delete the cache if I re-deploy.
-@st.cache(hash_funcs={ghapi.core._GhVerb: lambda _: None})
-def stream_stats(username, count_external_repos=None):
+# @st.cache(hash_funcs={ghapi.core._GhVerb: lambda _: None})
+# def stream_stats(username, count_external_repos=None):
 
-    progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
-    progress_bar.progress(0)
+#     progress_text.write(f"<sub>Preparing...</sub>", unsafe_allow_html=True)
+#     progress_bar.progress(0)
 
-    for stats, progress, progress_msg in github_reader.stream_stats(
-        username, 2020, count_external_repos
-    ):
-        progress_bar.progress(progress)
-        progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
-        show_tweet(stats)
-    return stats
+#     for stats, progress, progress_msg in github_reader.stream_stats(
+#         username, 2020, count_external_repos
+#     ):
+#         progress_bar.progress(progress)
+#         progress_text.write(f"<sub>{progress_msg}</sub>", unsafe_allow_html=True)
+#         show_tweet(stats)
+#     return stats
 
 
 if username or (clicked and username):
@@ -184,42 +224,56 @@ if username or (clicked and username):
     # copy_button.write("")
     # divider.write("<br>", unsafe_allow_html=True)
 
-    start_time = time.time()
     # TODO: When it's using cached results, the transition is very immediate / hard to
     # notice if trying multiple usernames after another. Make a 1 s delay or a better
     # transition.
+    start_time = time.time()
     try:
         # If using cached results, this returns immediately, i.e. we need to show
         # the tweet again below.
-        stats = stream_stats(username, [])
-        progress_bar.empty()
-        progress_text.write("")
-        show_tweet(stats)
+        # stats = stream_stats(username, [])
+
+
+        progress_bar.progress(0)
+        progress_text.write(f"Getting user: {username}")
+        stats_maker = github_reader.StatsMaker(username, 2020)
+
+        include_external = show_checkboxes_external(stats_maker.external_repos)
 
         # TODO: Doing this here makes the checkbox disappear for a moment, do it further
         # up. But: user shouldn't select this before stats have finished streaming.
-        count_external_repos = []
-        count_external = checkbox_count_external.checkbox(
-            "Count stars of external repos I contributed to"
-        )
-        if count_external:
-            with checkboxes_external:
-                for full_name in stats["external_repos"]:
-                    if st.checkbox(full_name):
-                        count_external_repos.append(full_name)
+        # count_external_repos = []
+        # count_external = checkbox_count_external.checkbox(
+        #     "Count stars of external repos I contributed to"
+        # )
+        # if count_external:
+        #     with checkboxes_external:
+        #         for full_name in stats["external_repos"]:
+        #             if st.checkbox(full_name):
+        #                 count_external_repos.append(full_name)
 
-        # TODO: This is done again here for now because everything is returned in stats.
-        #   Get external_repos before querying for stats, then remove this.
-        stats = stream_stats(username, count_external_repos)
+        for stats, progress, progress_msg in stats_maker.stream(include_external):
+            progress_bar.progress(progress)
+            progress_text.write(progress_msg)
+            show_tweet(stats)
+
         progress_bar.empty()
         progress_text.write("")
-        show_tweet(stats)
+        
+        # TODO: This is done again here for now because everything is returned in stats.
+        #   Get external_repos before querying for stats, then remove this.
+        # stats = stream_stats(username, count_external_repos)
+        # progress_bar.empty()
+        # progress_text.write("")
+        # show_tweet(stats)
 
         # with checkbox_count_external.beta_expander(
         #     "Count stars of external repos I contributed to"
         # ):
         #     for repo in stats["external_repos"]:
         #         st.checkbox(repo)
+
+    # TODO: Re-enable this error in github_reader.
     except github_reader.UserNotFoundError:
         progress_bar.empty()
         progress_text.write("")
@@ -238,4 +292,4 @@ if username or (clicked and username):
     # )
     # copy_button.bokeh_chart(copy_button_bokeh)
 
-    show_limits()
+    show_fineprint(time.time() - start_time)
