@@ -175,7 +175,6 @@ if username or (clicked and username):
 
     except github_reader.UserNotFoundError:
         # Show an error message if the user doesn't exist.
-        # TODO: Re-enable this error in github_reader.
         progress_bar.empty()
         progress_text.write("")
         tweet_box.error(
