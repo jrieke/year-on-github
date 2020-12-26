@@ -78,39 +78,40 @@ def construct_fineprint(runtime: Union[float, None] = None):
     if runtime is not None:
         s += f"Runtime: {runtime:.2f} s"
     s += "</p>"
-    fineprint.write(s, unsafe_allow_html=True)
+    return s
 
 
-show_fineprint()
-
-
-
-
-def show_tweet(stats):
-    """Generate tweet based on `stats` and show the text plus a "Tweet it!" button."""
-
-    # Create tweet from template and show.
+def construct_tweet(stats: Dict) -> str:
+    """Generate tweet html text based on `stats`."""
     if stats["is_org"]:
-        tweet = org_template.format(**stats)
+        tweet_html = ORG_TEMPLATE.format(**stats)
     else:
-        tweet = user_template.format(**stats)
-    tweet_box.write(tweet, unsafe_allow_html=True)
+        tweet_html = USER_TEMPLATE.format(**stats)
+    return tweet_html
 
-    # Create tweet link and show as button.
-    link = re.sub("<.*?>", "", tweet)  # remove html tags
+
+def construct_tweet_button(tweet_html: str) -> str:
+    """Generate tweet button html based on tweet html text."""
+    link = re.sub("<.*?>", "", tweet_html)  # remove html tags
     link = link.strip()  # remove blank lines at start/end
     link = urllib.parse.quote(link)  # encode for url
     link = "https://twitter.com/intent/tweet?text=" + link
-    tweet_button.write(
-        f'<a id="twitter-link" href="{link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
-        unsafe_allow_html=True,
+    tweet_button_html = (
+        f'<a id="twitter-link" href="{link}" target="_blank" rel="noopener '
+        f'noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>'
     )
+    return tweet_button_html
 
-    # Create template to copy to clipboard.
-    # copy_template = re.sub("<.*?>", "", template)  # remove html tags
-    # copy_template = copy_template.strip()  # remove blank linkes at start/end
-    # copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
-    # st.bokeh_chart(copy_button)
+
+# def construct_copy_button(tweet_html: str) -> str:
+#     # Create template to copy to clipboard.
+#     copy_template = re.sub("<.*?>", "", template)  # remove html tags
+#     copy_template = copy_template.strip()  # remove blank linkes at start/end
+#     copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
+#     st.bokeh_chart(copy_button)
+
+
+fineprint.write(construct_fineprint(), unsafe_allow_html=True)
 
 
 # TODO: The 2nd part is actually a bit useless here. Clicking the button actually
@@ -145,7 +146,19 @@ if username or (clicked and username):
             progress_text.write(
                 f'<p id="progress-text">{progress_msg}</p>', unsafe_allow_html=True
             )
-            show_tweet(stats)
+
+            tweet_html = construct_tweet(stats)
+            tweet_box.write(
+                tweet_html,
+                unsafe_allow_html=True,
+            )
+
+            tweet_button_html = construct_tweet_button(tweet_html)
+            tweet_button.write(
+                tweet_button_html,
+                unsafe_allow_html=True,
+            )
+
         progress_bar.empty()
         progress_text.write("")
 
@@ -161,7 +174,9 @@ if username or (clicked and username):
         )
 
     # Show runtime of the query and remaining rate limits.
-    show_fineprint(time.time() - start_time)
+    fineprint.write(
+        construct_fineprint(time.time() - start_time), unsafe_allow_html=True
+    )
 
     # copy_text = copy_template.format(**stats)
     # # TODO: This requires streamlit-nightly at the moment, because there's a bug that
