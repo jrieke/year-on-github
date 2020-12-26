@@ -1,9 +1,13 @@
+"""
+Contains methods to query user info and stats from the Github API.
+
+Note that Github hosts two APIs, a REST API (also known as v3) and a GraphQL API (v4),
+which are both used here. Expensive API calls are cached via streamlit's `st.cache`.
+"""
+
 import os
 from ghapi.core import GhApi
-from ghapi.page import paged, pages
-
-# from urllib.request import urlopen
-# from PIL import Image
+from ghapi.page import pages
 from dotenv import load_dotenv
 import requests
 import time
@@ -12,39 +16,37 @@ from fastcore.net import HTTP404NotFoundError
 import streamlit as st
 import copy
 
-# from joblib import Parallel, delayed
 import utils
 
 
-# def get_image(url):
-#     img = Image.open(urlopen(url))
-#     return img
-
-# Set up the Github API client.
-def limit_cb(rem, quota):
-    print(f"Quota remaining: {rem} of {quota}")
-    pass
-
-
+# Set up the Github REST API client.
+# Note that ghapi contains a bug in the `paged` method as of December 2020, therefore 
+# it's safer to install my fork (see README.md for instructions).
 load_dotenv()
-api = GhApi(token=os.getenv("GH_TOKEN"), limit_cb=limit_cb)
+api = GhApi(
+    token=os.getenv("GH_TOKEN"),
+    limit_cb=lambda rem, quota: print(f"Quota remaining: {rem} of {quota}"),
+)
+
+
+def rate_limit_info():
+    """Return information about reamining API calls (on REST API and GraphQL API)."""
+    limits = api.rate_limit.get()
+    d = {
+        "core_remaining": limits.resources.core.remaining,
+        "core_reset": utils.format_timedelta(
+            datetime.fromtimestamp(limits.resources.core.reset) - datetime.now()
+        ),
+        "graphql_remaining": limits.resources.graphql.remaining,
+        "graphql_reset": utils.format_timedelta(
+            datetime.fromtimestamp(limits.resources.graphql.reset) - datetime.now()
+        ),
+    }
+    return d
 
 
 class UserNotFoundError(Exception):
     pass
-
-
-# def _get_user_info(username):
-#     """Returns some basic information about the user."""
-#     try:
-#         user = api.users.get_by_username(username)
-#     except HTTP404NotFoundError:
-#         raise UserNotFoundError(
-#             f"Received 404 error when searching for user: {username}"
-#         )
-#     avatar_url = user.avatar_url
-#     is_org = user.type == "Organization"
-#     return avatar_url, is_org
 
 
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
@@ -138,7 +140,7 @@ def _query_user(username, year):
             for item in contrib_collection["commitContributionsByRepository"]
             if item["repository"]["nameWithOwner"].split("/")[0] != username
         ]
-        
+
         # TODO: Maybe pass number of commits outside as well and show it in checkboxes.
 
         # Parse external repos but do not do binary search here (it's too expensive
@@ -174,22 +176,116 @@ def _query_user(username, year):
     )
 
 
-# @st.cache
-# def _get_new_stars(self, full_name, created_at, stargazers_count, year):
-#     # COULD ALSO DO THIS OUTSIDE OF THIS CLASS, MIGHT WORK BETTER WITH CACHE, OR MAKE STATIC METHOD.
-#     # if possible, decide on args
-#     # if not, do full inspection by querying stargazers
-#     # return new stars
-#     new_stars = 123
-#     return new_stars
+@st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
+def _query_repo(full_name, year):
+    """Returns number of new stars in a year through binary search on the Github API."""
+
+    # Calculate number of pages. Each page has 100 items.
+    # num_pages = 1 + int(stargazers_count / 100)  # round up
+
+    def get_stargazers(page):
+        """Retrieves a page of stargazers from the Github API."""
+        # TODO: This throws an error when parsing very big and old repos, because very
+        # old records are not returned. E.g. sindresorhus/awesome has 150k stars,
+        # but it stops after around 400 pages. fastcore.basics.HTTP422UnprocessableEntityError
+        return api.activity.list_stargazers_for_repo(
+            *full_name.split("/"),
+            headers={"Accept": "application/vnd.github.v3.star+json"},
+            per_page=100,
+            page=page,
+        )
+
+    def count_new(stargazers):
+        """Returns number of stargazers who starred in `year`."""
+        new_stars = 0
+        for stargazer in stargazers:
+            if int(stargazer.starred_at[:4]) == year:
+                new_stars += 1
+        return new_stars
+
+    # Query first page of stargazers (required to retrieve total number of pages).
+    # Also, most repos only have one page anyway (i.e. <100 stars).
+    stargazers = get_stargazers(1)
+    new_stars = count_new(stargazers)
+    num_pages = max(1, api.last_page())  # ghapi returns 0 here if there's only 1 page
+    print("Total pages:", num_pages)
+
+    if num_pages == 1:  # only one page
+        print("Total new stars:", new_stars)
+        return new_stars
+    elif new_stars > 0 and new_stars < len(stargazers):  # break is on first page
+        print("Found year break on first page")
+
+        # Add all stars on the last page.
+        new_stars += len(get_stargazers(num_pages))
+
+        # Add 100 stars for each page in between.
+        if num_pages > 2:
+            new_stars += (num_pages - 2) * 100
+
+        print("Total new stars:", new_stars)
+        return new_stars
+    else:
+        # If there's more than 1 page: Use binary search to find the page that contains
+        # the break from 2019 to 2020.
+        # Start on 2nd page b/c we already searched the 1st one.
+        from_page = 2
+        to_page = num_pages
+
+        while from_page <= to_page:
+            page = (from_page + to_page) // 2
+            print(f"Searching from page {from_page} to {to_page}, looking at {page}")
+
+            # Get year of first and last stargazer on the page.
+            stargazers = get_stargazers(page)
+            top_year = int(stargazers[0].starred_at[:4])
+            bottom_year = int(stargazers[-1].starred_at[:4])
+            # print(top_year, bottom_year)
+
+            # TODO: Check if everything works properly for 2021.
+            if from_page == to_page or (top_year < year and bottom_year >= year):
+                # Either `page` is the one with the year break, or we reached the first
+                # or last page and the year break is not contained in any page.
+                print("Page:", page, "-> found it!")
+                break
+            elif bottom_year < year and top_year < year:  # before 2020
+                from_page = min(num_pages, page + 1)
+                print("Page:", page, "-> before 2020, setting from_page to:", from_page)
+            elif bottom_year >= year and top_year >= year:  # equal to or after 2020
+                to_page = max(1, page - 1)
+                print("Page:", page, "-> before 2020, setting to_page to:", to_page)
+            else:
+                raise RuntimeError()
+            # print()
+
+        # Count new stars on `page`.
+        new_stars = count_new(stargazers)
+
+        # Add all stars on the last page.
+        if page < num_pages:
+            new_stars += len(get_stargazers(num_pages))
+
+        # Add 100 stars for each page in between.
+        if page < num_pages - 1:
+            new_stars += (num_pages - 1 - page) * 100
+
+        print("Total new stars:", new_stars)
+        return new_stars
 
 
-# # TODO: New structure for this file.
 class StatsMaker:
     def __init__(self, username, year):
+        """
+        Initializes an object, which queries and stores the Github stats for a user.
+        
+        This calls the cached functions above to query the API. Note that these 
+        functions cannot be included directly in this class because streamlit's 
+        caching mechanism wouldn't work properly then.
+        """
         self.username = username
         self.year = year
 
+        # Query some basic information for the user. Shouldn't take more than 1-3 s.
         (
             self.is_org,
             self.contributions,
@@ -198,18 +294,33 @@ class StatsMaker:
             external_repo_stars,
         ) = _query_user(username, year)
 
-        # Need to copy the dicts here because streamlit doesn't allow mutating return
+        # Copy the returned dicts because streamlit doesn't allow mutating return
         # values of cached functions.
         self.own_repo_stars = copy.deepcopy(own_repo_stars)
         self.external_repo_stars = copy.deepcopy(external_repo_stars)
 
+        # Make a list with the names of external repos.
         # TODO: Check again that this is ordered by the number of contributions.
         self.external_repos = list(self.external_repo_stars.keys())
 
+        # TODO:
         # - contributions -> for org: contributions to all its repos
         # - num of repos contributed to -> for org: number of repos that the org owns that were contributed to
 
     def stream(self, include_external=None):
+        """
+        Generator that calculates the stats and yields intermediate results.
+
+        Args:
+            include_external (list, optional): Names of external repos to include in 
+                the count. A list of all external repos is contained in 
+                `self. external_repos`. Defaults to `None`, in which case only the
+                user's own repos are counted.
+
+        Yields:
+            (dict, float, str): Intermediate stats as a dict, the current progress 
+                (0-1), and a progress message
+        """
 
         print("-" * 80)
         print("Streaming stats for user:", self.username)
@@ -252,6 +363,7 @@ class StatsMaker:
         print("-" * 80)
 
     def _compute_stats(self, include_external):
+        """Computes intermediate statistics."""
         # Compile all repos that should be included in the current count (i.e. are own
         # repo or included external repo and have stars != None).
         all_repo_stars = {
@@ -287,21 +399,7 @@ class StatsMaker:
         return stats
 
 
-def rate_limit_info():
-    limits = api.rate_limit.get()
-    d = {
-        "core_remaining": limits.resources.core.remaining,
-        "core_reset": utils.format_timedelta(
-            datetime.fromtimestamp(limits.resources.core.reset) - datetime.now()
-        ),
-        "graphql_remaining": limits.resources.graphql.remaining,
-        "graphql_reset": utils.format_timedelta(
-            datetime.fromtimestamp(limits.resources.graphql.reset) - datetime.now()
-        ),
-    }
-    return d
-
-
+# TODO: Old code, delete once I've ported everything to the code above.
 # def _get_contributions(username, year, verbose=False):
 #     """
 #     Returns number of total contributions from Github's GraphQL API.
@@ -596,116 +694,3 @@ def rate_limit_info():
 #     print()
 
 #     return new_stars
-
-
-@st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
-def _query_repo(full_name, year):
-    """Returns the number of stars in a year through binary search on the Github API."""
-
-    # Calculate number of pages. Each page has 100 items.
-    # num_pages = 1 + int(stargazers_count / 100)  # round up
-
-    def get_stargazers(page):
-        """Retrieve a page of stargazers from the Github API."""
-        # TODO: This throws an error when parsing very big and old repos, because very
-        # old records are not returned. E.g. sindresorhus/awesome has 150k stars,
-        # but it stops after around 400 pages. fastcore.basics.HTTP422UnprocessableEntityError
-        return api.activity.list_stargazers_for_repo(
-            *full_name.split("/"),
-            headers={"Accept": "application/vnd.github.v3.star+json"},
-            per_page=100,
-            page=page,
-        )
-
-    def count_new(stargazers):
-        """Return number of stargazers who starred in `year`."""
-        new_stars = 0
-        for stargazer in stargazers:
-            if int(stargazer.starred_at[:4]) == year:
-                new_stars += 1
-        return new_stars
-
-    # Query first page of stargazers (required to retrieve total number of pages).
-    # Also, most repos only have one page anyway (i.e. <100 stars).
-    stargazers = get_stargazers(1)
-    new_stars = count_new(stargazers)
-    num_pages = max(1, api.last_page())  # ghapi returns 0 here if there's only 1 page
-    print("Total pages:", num_pages)
-
-    if num_pages == 1:  # only one page
-        print("Total new stars:", new_stars)
-        return new_stars
-    elif new_stars > 0 and new_stars < len(stargazers):  # break is on first page
-        print("Found year break on first page")
-
-        # Add all stars on the last page.
-        new_stars += len(get_stargazers(num_pages))
-
-        # Add 100 stars for each page in between.
-        if num_pages > 2:
-            new_stars += (num_pages - 2) * 100
-
-        print("Total new stars:", new_stars)
-        return new_stars
-    else:
-        # If there's more than 1 page: Use binary search to find the page that contains
-        # the break from 2019 to 2020.
-        # Start on 2nd page b/c we already searched the 1st one.
-        from_page = 2
-        to_page = num_pages
-
-        while from_page <= to_page:
-            page = (from_page + to_page) // 2
-            print(f"Searching from page {from_page} to {to_page}, looking at {page}")
-
-            # Get year of first and last stargazer on the page.
-            stargazers = get_stargazers(page)
-            top_year = int(stargazers[0].starred_at[:4])
-            bottom_year = int(stargazers[-1].starred_at[:4])
-            # print(top_year, bottom_year)
-
-            # TODO: Check if everything works properly for 2021.
-            if from_page == to_page or (top_year < year and bottom_year >= year):
-                # Either `page` is the one with the year break, or we reached the first
-                # or last page and the year break is not contained in any page.
-                print("Page:", page, "-> found it!")
-                break
-            elif bottom_year < year and top_year < year:  # before 2020
-                from_page = min(num_pages, page + 1)
-                print("Page:", page, "-> before 2020, setting from_page to:", from_page)
-            elif bottom_year >= year and top_year >= year:  # equal to or after 2020
-                to_page = max(1, page - 1)
-                print("Page:", page, "-> before 2020, setting to_page to:", to_page)
-            else:
-                raise RuntimeError()
-            # print()
-
-        # Count new stars on `page`.
-        new_stars = count_new(stargazers)
-
-        # Add all stars on the last page.
-        if page < num_pages:
-            new_stars += len(get_stargazers(num_pages))
-
-        # Add 100 stars for each page in between.
-        if page < num_pages - 1:
-            new_stars += (num_pages - 1 - page) * 100
-
-        print("Total new stars:", new_stars)
-        return new_stars
-
-
-# METHOD 2: PAGED (with a D)
-# jrieke: 9 seconds, 29 API calls
-# chrieke: 23 seconds, 48 API calls
-# for stargazers in paged(
-#     api.activity.list_stargazers_for_repo,
-#     username,
-#     repo.name,
-#     per_page=100,
-#     headers={"Accept": "application/vnd.github.v3.star+json"},
-# ):
-#     for stargazer in stargazers:
-#         # print(stargazer)
-#         if int(stargazer.starred_at[:4]) == year:
-#             new_stars_per_repo[repo.name] += 1
