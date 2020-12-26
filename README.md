@@ -2,7 +2,7 @@
 
 [![Heroku App Status](http://heroku-shields.herokuapp.com/my-year-on-github)](http://gh2020.jrieke.com)
 
-**Share your Github stats for 2020 on Twitter**
+**Share your Github stats for 2020 on Twitter.**
 
 This project contains a small web app that let's you share stats about your Github activity from last year. It's like Spotify's "year in review" but for Github. The app is built with [Streamlit](https://www.streamlit.io/), queries Github's API via [ghapi](https://ghapi.fast.ai/), and let's you share the generated stats directly on [Twitter](https://twitter.com/).
 
