@@ -18,10 +18,7 @@ utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
 st.image(OCTOPUS_ICON, width=100)
-"""
-# Tweet your Github stats for 2020 ✨
-"""
-# st.write("<br>", unsafe_allow_html=True)
+st.title("Tweet your Github stats for 2020 ✨")
 username = st.text_input("Your Github username")
 clicked = st.button("Show preview")
 checkbox_count = st.empty()
@@ -128,15 +125,18 @@ def show_tweet(stats):
         unsafe_allow_html=True,
     )
 
-# Create template to copy to clipboard.
-# copy_template = re.sub("<.*?>", "", template)  # remove html tags
-# copy_template = copy_template.strip()  # remove blank linkes at start/end
-# copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
-# st.bokeh_chart(copy_button)
+    # Create template to copy to clipboard.
+    # copy_template = re.sub("<.*?>", "", template)  # remove html tags
+    # copy_template = copy_template.strip()  # remove blank linkes at start/end
+    # copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
+    # st.bokeh_chart(copy_button)
 
 
+# TODO: The 2nd part is actually a bit useless here. Clicking the button actually 
+#   doesn't change a critical value but it just updates the page so the username
+#   value is passed on properly. 
 if username or (clicked and username):
-    
+
     # Hide some components in case they are already shown but a new username is queried.
     tweet_button.write("")
     checkbox_count.empty()
@@ -145,7 +145,7 @@ if username or (clicked and username):
 
     start_time = time.time()
     try:
-        # Create a StatsMaker instance. This already queries some basic information 
+        # Create a StatsMaker instance. This already queries some basic information
         # about the user (e.g. its repos) but shouldn't take more than 1-3 s.
         progress_bar.progress(0)
         progress_text.write(f"Getting user: {username}")
@@ -162,7 +162,7 @@ if username or (clicked and username):
             show_tweet(stats)
         progress_bar.empty()
         progress_text.write("")
-    
+
     except github_reader.UserNotFoundError:
         # Show an error message if the user doesn't exist.
         # TODO: Re-enable this error in github_reader.
@@ -174,8 +174,8 @@ if username or (clicked and username):
             or [is this a bug](https://github.com/jrieke/my-year-on-github/issues)?
             """
         )
-        
-    # Show runtime of the query and remaining rate limits. 
+
+    # Show runtime of the query and remaining rate limits.
     show_fineprint(time.time() - start_time)
 
     # copy_text = copy_template.format(**stats)
