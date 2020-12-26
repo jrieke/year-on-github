@@ -20,7 +20,7 @@ import utils
 
 
 # Set up the Github REST API client.
-# Note that ghapi contains a bug in the `paged` method as of December 2020, therefore 
+# Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
 load_dotenv()
 api = GhApi(
@@ -330,34 +330,43 @@ class StatsMaker:
         if include_external is None:
             include_external = []
 
-        # Yield once in the beginning, to show already existing stats.
-        yield self._compute_stats(include_external), 0.25, "Starting to parse"
-
-        # TODO: Could also iterate only over repos where value is None. And maybe put
-        #   own and external repos into one thing to show more meaningful progress.
-        #   Then we could also sort by number of stars possible (but this would require
-        #   returning it in _query_user!)-
-        for repo, new_stars in self.own_repo_stars.items():
-            if new_stars is None:
-                print(repo)
-                self.own_repo_stars[repo] = _query_repo(repo, self.year)
-                print()
-                progress = 0.5
-                progress_msg = f"Parsing repo: {repo}"
-                yield self._compute_stats(include_external), progress, progress_msg
-
+        # Construct list of all repos that need to be queried (i.e. all the ones
+        # where we didn't evaluate the number of new stars yet).
+        repos_to_query = [
+            repo for repo, new_stars in self.own_repo_stars.items() if new_stars is None
+        ]
         for repo in include_external:
-            new_stars = self.external_repo_stars[repo]
-            if new_stars is None:
-                print(repo)
-                self.external_repo_stars[repo] = _query_repo(repo, self.year)
-                print()
-                progress = 0.75
-                progress_msg = f"Parsing repo: {repo}"
-                yield self._compute_stats(include_external), progress, progress_msg
+            if self.external_repo_stars[repo] is None:
+                repos_to_query.append(repo)
 
-        # Yield stats one more time, in case nothing changed above.
-        yield self._compute_stats(include_external), 1.0, "Finished"
+        def progress_msg(repo_idx):
+            try:
+                return f"Parsing repo: {repos_to_query[repo_idx]}"
+            except IndexError:
+                return "Finished"
+
+        # Yield once in the beginning, to show already existing stats.
+        progress = 0.2 if repos_to_query else 1.0
+        yield self._compute_stats(include_external), progress, progress_msg(0)
+
+        # Perform the queries, store results and yield intermediate performance.
+        for i, repo in enumerate(repos_to_query):
+            # TODO: Maybe print in _query_repo instead.
+            print(repo)
+            new_stars = _query_repo(repo, self.year)
+            print()
+
+            try:
+                self.own_repo_stars[repo] = new_stars
+            except KeyError:
+                self.external_repo_stars[repo] = new_stars
+
+            progress = 0.2 + 0.8 * (i + 1) / len(repos_to_query)
+            yield self._compute_stats(include_external), progress, progress_msg(i + 1)
+
+        # Yield stats one more time, in case no repo was queried changed above.
+        # TODO: I think this is not required any more but check again.
+        # yield self._compute_stats(include_external), 1.0, "Finished"
 
         print(f"Took {time.time() - start_time} s")
         print("-" * 80)

@@ -26,10 +26,6 @@ button {
   margin-bottom: -5px;
 }
 
-.stProgress .st-bo {
-    background-color: green;
-}
-
 #progress-text {
   font-size: 10pt;
   margin-top: 20px;
@@ -41,10 +37,14 @@ button {
   margin-top: -20px;
 }
 
-.st-dt {
+/* .st-dt {
   background-color: #4d9feb;
   border-radius: 0.25rem;
-}
+} */
+
+/* .stProgress .st-bo {
+    background-color: green;
+} */
 
 #tweet {
   margin-top: -10px;
