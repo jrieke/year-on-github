@@ -132,9 +132,9 @@ def show_tweet(stats):
     # st.bokeh_chart(copy_button)
 
 
-# TODO: The 2nd part is actually a bit useless here. Clicking the button actually 
+# TODO: The 2nd part is actually a bit useless here. Clicking the button actually
 #   doesn't change a critical value but it just updates the page so the username
-#   value is passed on properly. 
+#   value is passed on properly.
 if username or (clicked and username):
 
     # Hide some components in case they are already shown but a new username is queried.
@@ -148,7 +148,10 @@ if username or (clicked and username):
         # Create a StatsMaker instance. This already queries some basic information
         # about the user (e.g. its repos) but shouldn't take more than 1-3 s.
         progress_bar.progress(0)
-        progress_text.write(f"Getting user: {username}")
+        progress_text.write(
+            f'<p id="progress-text">Getting user: {username}</p>',
+            unsafe_allow_html=True,
+        )
         stats_maker = github_reader.StatsMaker(username, 2020)
 
         # Show a checkbox for each external repo that the user contributed to.
@@ -158,7 +161,9 @@ if username or (clicked and username):
         # The `stream` method is a generator which yields intermediate results.
         for stats, progress, progress_msg in stats_maker.stream(include_external):
             progress_bar.progress(progress)
-            progress_text.write(progress_msg)
+            progress_text.write(
+                f'<p id="progress-text">{progress_msg}</p>', unsafe_allow_html=True
+            )
             show_tweet(stats)
         progress_bar.empty()
         progress_text.write("")

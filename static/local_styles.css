@@ -26,12 +26,32 @@ button {
   margin-bottom: -5px;
 }
 
+.stProgress .st-bo {
+    background-color: green;
+}
+
+#progress-text {
+  font-size: 10pt;
+  margin-top: 20px;
+}
+
+.stProgress {
+  margin-left: -12px;
+  margin-right: -12px;
+  margin-top: -20px;
+}
+
+.st-dt {
+  background-color: #4d9feb;
+  border-radius: 0.25rem;
+}
+
 #tweet {
   margin-top: -10px;
   /* margin-bottom: 20px; */
   padding: 20px;
   border: 1px solid #4d9feb;
-  border-radius: 10px;
+  border-radius: 0.25rem;
 }
 
 #twitter-link {
