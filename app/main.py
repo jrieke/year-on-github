@@ -37,18 +37,23 @@ def show_checkboxes_external(external_repos):
     """Show checkboxes to select external repos that should be counted."""
     include_external = []
     if external_repos:
+        # Need to set custom key here so this doesn't keep state when querying for 
+        # different users.
         count = checkbox_count.checkbox(
-            "Count stars of external repos I contributed to"
+            "Count stars of external repos I contributed to", key="count" + username
         )
         if count:
             with checkboxes_external:
                 for repo in external_repos[:5]:
-                    if st.checkbox(repo):
+                    # Need to set custom key here so this doesn't keep state when 
+                    # querying for different users (only happens if they contributed to 
+                    # the same repo).
+                    if st.checkbox(repo, key="external" + username + repo):
                         include_external.append(repo)
                 if len(external_repos) > 5:
                     with st.beta_expander("Show more"):
                         for repo in external_repos[5:]:
-                            if st.checkbox(repo):
+                            if st.checkbox(repo, key="external" + username + repo):
                                 include_external.append(repo)
     return include_external
 
