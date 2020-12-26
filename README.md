@@ -9,7 +9,7 @@ This project contains a small web app that let's you share stats about your Gith
 *🚀 Try it out: [gh2020.jrieke.com](http://gh2020.jrieke.com/) 🚀*
 
 <p align="center">
-    <a href="http://gh2020.jrieke.com/"><img src="images/preview.png" height=500></a>
+    <a href="http://gh2020.jrieke.com/"><img src="images/preview.png" width=500></a>
 </p>
 
 ---
