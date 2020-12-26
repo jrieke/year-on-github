@@ -3,10 +3,12 @@ Runs the streamlit app.
 """
 
 import time
-import streamlit as st
-import github_reader
+from typing import List, Union, Dict, Tuple
 import re
 import urllib
+
+import streamlit as st
+import github_reader
 
 import utils
 from tweet_templates import ORG_TEMPLATE, USER_TEMPLATE
@@ -38,7 +40,7 @@ tweet_button = st.empty()
 fineprint = st.empty()
 
 
-def show_checkboxes_external(external_repos):
+def show_checkboxes_external(external_repos: List[str]) -> List[str]:
     """Show checkboxes to select external repos that should be counted."""
     include_external = []
     if external_repos:
@@ -63,7 +65,7 @@ def show_checkboxes_external(external_repos):
     return include_external
 
 
-def show_fineprint(runtime=None):
+def construct_fineprint(runtime: Union[float, None] = None):
     """Show rate limits and runtime of the last action as fineprint."""
     limits = github_reader.rate_limit_info()
     s = """
