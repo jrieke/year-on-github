@@ -356,10 +356,12 @@ class StatsMaker:
             new_stars = _query_repo(repo, self.year)
             print()
 
-            try:
+            if repo in self.own_repo_stars:
                 self.own_repo_stars[repo] = new_stars
-            except KeyError:
+            elif repo in self.external_repo_stars:
                 self.external_repo_stars[repo] = new_stars
+            else:
+                raise RuntimeError()
 
             progress = 0.2 + 0.8 * (i + 1) / len(repos_to_query)
             yield self._compute_stats(include_external), progress, progress_msg(i + 1)
