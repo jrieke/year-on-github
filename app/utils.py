@@ -37,8 +37,8 @@ def remote_css(url):
 def material_icon(icon_name):
     """
     Shows a material icon in streamlit.
-    
-    To use this, call at the beginning of your script: 
+
+    To use this, call at the beginning of your script:
     remote_css("https://fonts.googleapis.com/icon?family=Material+Icons")
     """
     st.markdown(f'<i class="material-icons">{icon_name}</i>', unsafe_allow_html=True)

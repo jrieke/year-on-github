@@ -277,9 +277,9 @@ class StatsMaker:
     def __init__(self, username, year):
         """
         Initializes an object, which queries and stores the Github stats for a user.
-        
-        This calls the cached functions above to query the API. Note that these 
-        functions cannot be included directly in this class because streamlit's 
+
+        This calls the cached functions above to query the API. Note that these
+        functions cannot be included directly in this class because streamlit's
         caching mechanism wouldn't work properly then.
         """
         self.username = username
@@ -312,13 +312,13 @@ class StatsMaker:
         Generator that calculates the stats and yields intermediate results.
 
         Args:
-            include_external (list, optional): Names of external repos to include in 
-                the count. A list of all external repos is contained in 
+            include_external (list, optional): Names of external repos to include in
+                the count. A list of all external repos is contained in
                 `self. external_repos`. Defaults to `None`, in which case only the
                 user's own repos are counted.
 
         Yields:
-            (dict, float, str): Intermediate stats as a dict, the current progress 
+            (dict, float, str): Intermediate stats as a dict, the current progress
                 (0-1), and a progress message
         """
 
