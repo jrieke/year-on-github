@@ -17,6 +17,10 @@ st.set_page_config(page_title="My year on Github 2020", page_icon=OCTOPUS_ICON)
 utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
+st.write(
+    '<div class="sticky-header"><a href="https://github.com/jrieke/my-year-on-github/stargazers">Add your ⭐ on Github</a></div>',
+    unsafe_allow_html=True,
+)
 st.image(OCTOPUS_ICON, width=100)
 st.title("Tweet your Github stats for 2020 ✨")
 username = st.text_input("Your Github username")
@@ -37,7 +41,7 @@ def show_checkboxes_external(external_repos):
     """Show checkboxes to select external repos that should be counted."""
     include_external = []
     if external_repos:
-        # Need to set custom key here so this doesn't keep state when querying for 
+        # Need to set custom key here so this doesn't keep state when querying for
         # different users.
         count = checkbox_count.checkbox(
             "Count stars of external repos I contributed to", key="count" + username
@@ -45,8 +49,8 @@ def show_checkboxes_external(external_repos):
         if count:
             with checkboxes_external:
                 for repo in external_repos[:5]:
-                    # Need to set custom key here so this doesn't keep state when 
-                    # querying for different users (only happens if they contributed to 
+                    # Need to set custom key here so this doesn't keep state when
+                    # querying for different users (only happens if they contributed to
                     # the same repo).
                     if st.checkbox(repo, key="external" + username + repo):
                         include_external.append(repo)

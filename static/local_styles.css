@@ -6,6 +6,20 @@ a {
   text-decoration: none;
 }
 
+.sticky-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  max-width: 420px;
+  margin-left: -16px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  text-align: center;
+  z-index: 1000;
+  background-color: white;
+  font-size: 10pt;
+}
+
 h1 {
   line-height: 1.5;
   margin-bottom: 15px;
