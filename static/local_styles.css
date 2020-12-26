@@ -26,6 +26,17 @@ button {
   margin-bottom: -5px;
 }
 
+.streamlit-expanderHeader {
+  border: none !important;
+  padding-top: 0.25em;
+  padding-left: 1px;
+}
+
+.streamlit-expanderContent {
+  border: none !important;
+  padding-top: 0.3em;
+}
+
 #progress-text {
   font-size: 10pt;
   margin-top: 20px;
