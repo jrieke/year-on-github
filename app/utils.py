@@ -1,7 +1,8 @@
 import streamlit as st
+import datetime
 
 
-def format_timedelta(delta) -> str:
+def format_timedelta(delta: datetime.timedelta) -> str:
     """Formats timedelta to x days, x h, x min, x s."""
     s = delta.total_seconds()
     days, remainder = divmod(s, 86400)
@@ -23,18 +24,18 @@ def format_timedelta(delta) -> str:
     return output
 
 
-def local_css(file_name):
+def local_css(file_name: str) -> None:
     """Loads a local .css file into streamlit."""
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-def remote_css(url):
+def remote_css(url: str) -> None:
     """Loads a remote .css file into streamlit."""
     st.markdown(f'<link href="{url}" rel="stylesheet">', unsafe_allow_html=True)
 
 
-def material_icon(icon_name):
+def material_icon(icon_name: str) -> None:
     """
     Shows a material icon in streamlit.
 

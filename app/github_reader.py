@@ -6,15 +6,17 @@ which are both used here. Expensive API calls are cached via streamlit's `st.cac
 """
 
 import os
+import time
+from datetime import datetime
+import copy
+from typing import Dict, Tuple, List
+
 from ghapi.core import GhApi
 from ghapi.page import pages
 from dotenv import load_dotenv
 import requests
-import time
-from datetime import datetime
 from fastcore.net import HTTP404NotFoundError
 import streamlit as st
-import copy
 
 import utils
 
@@ -29,7 +31,7 @@ api = GhApi(
 )
 
 
-def rate_limit_info():
+def rate_limit_info() -> Dict:
     """Return information about reamining API calls (on REST API and GraphQL API)."""
     limits = api.rate_limit.get()
     d = {
@@ -50,7 +52,7 @@ class UserNotFoundError(Exception):
 
 
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
-def _query_user(username, year):
+def _query_user(username: str, year: int) -> Tuple:
     """Retrieves user infos + own repos + external repos from the Github API."""
 
     print("-" * 80)
@@ -177,13 +179,13 @@ def _query_user(username, year):
 
 
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
-def _query_repo(full_name, year):
+def _query_repo(full_name: str, year: int) -> int:
     """Returns number of new stars in a year through binary search on the Github API."""
 
     # Calculate number of pages. Each page has 100 items.
     # num_pages = 1 + int(stargazers_count / 100)  # round up
 
-    def get_stargazers(page):
+    def get_stargazers(page: int):
         """Retrieves a page of stargazers from the Github API."""
         # TODO: This throws an error when parsing very big and old repos, because very
         # old records are not returned. E.g. sindresorhus/awesome has 150k stars,
@@ -195,7 +197,7 @@ def _query_repo(full_name, year):
             page=page,
         )
 
-    def count_new(stargazers):
+    def count_new(stargazers) -> int:
         """Returns number of stargazers who starred in `year`."""
         new_stars = 0
         for stargazer in stargazers:
@@ -274,7 +276,7 @@ def _query_repo(full_name, year):
 
 
 class StatsMaker:
-    def __init__(self, username, year):
+    def __init__(self, username: str, year: int):
         """
         Initializes an object, which queries and stores the Github stats for a user.
 
@@ -307,7 +309,7 @@ class StatsMaker:
         # - contributions -> for org: contributions to all its repos
         # - num of repos contributed to -> for org: number of repos that the org owns that were contributed to
 
-    def stream(self, include_external=None):
+    def stream(self, include_external: List = None):
         """
         Generator that calculates the stats and yields intermediate results.
 
@@ -373,7 +375,7 @@ class StatsMaker:
         print(f"Took {time.time() - start_time} s")
         print("-" * 80)
 
-    def _compute_stats(self, include_external):
+    def _compute_stats(self, include_external: List):
         """Computes intermediate statistics."""
         # Compile all repos that should be included in the current count (i.e. are own
         # repo or included external repo and have stars != None).
