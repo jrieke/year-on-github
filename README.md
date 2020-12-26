@@ -21,14 +21,16 @@ This project contains a small web app that let's you share stats about your Gith
 ## Installation
 
 ```bash
-git clone https://github.com/jrieke/my-year-on-github
+git clone https://github.com/jrieke/my-year-on-github.git
 cd my-year-on-github
 pip install -r requirements.txt
 ```
 
-Note that [ghapi](https://ghapi.fast.ai/) has (as of 26 December 2020) a small bug which causes problems, therefore the commands above will install it from [my fork](https://github.com/jrieke/ghapi) (you can also install it manually from there with `pip install -U git+https://github.com/jrieke/ghapi`).
+**Known issues**
 
-Requires Python 3, tested with 3.7.6.
+- **Doesn't work with Python 3.8 and 3.9!** Both versions throw an error related to ghapi/multiprocessing that I couldn't resolve yet (`RuntimeError: An attempt has been made to start a new process before the current process has finished its bootstrapping phase` and subsequently an `EOFError`). Please use Python 3.7 for now.
+
+- [ghapi](https://ghapi.fast.ai/) has (as of 26 December 2020) a small bug in the `paged` method (see [here](https://github.com/fastai/ghapi/issues/24)), which may cause problems, therefore the commands above will install it from [my fork](https://github.com/jrieke/ghapi) (you can also install it manually from there with `pip install -U git+https://github.com/jrieke/ghapi`).
 
 
 ## Running locally
