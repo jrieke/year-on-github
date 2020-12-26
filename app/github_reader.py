@@ -4,7 +4,6 @@ from ghapi.page import paged, pages
 
 # from urllib.request import urlopen
 # from PIL import Image
-from collections import defaultdict
 from dotenv import load_dotenv
 import requests
 import time
@@ -139,6 +138,8 @@ def _query_user(username, year):
             for item in contrib_collection["commitContributionsByRepository"]
             if item["repository"]["nameWithOwner"].split("/")[0] != username
         ]
+        
+        # TODO: Maybe pass number of commits outside as well and show it in checkboxes.
 
         # Parse external repos but do not do binary search here (it's too expensive
         # and will be done later when required).
@@ -245,7 +246,7 @@ class StatsMaker:
                 yield self._compute_stats(include_external), progress, progress_msg
 
         # Yield stats one more time, in case nothing changed above.
-        yield self._compute_stats(include_external), 1, "Finished"
+        yield self._compute_stats(include_external), 1.0, "Finished"
 
         print(f"Took {time.time() - start_time} s")
         print("-" * 80)
@@ -708,4 +709,3 @@ def _query_repo(full_name, year):
 #         # print(stargazer)
 #         if int(stargazer.starred_at[:4]) == year:
 #             new_stars_per_repo[repo.name] += 1
-
