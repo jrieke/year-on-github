@@ -1,5 +1,7 @@
 # My year on Github 🧑‍💻
 
+[![Heroku App Status](http://heroku-shields.herokuapp.com/my-year-on-github)](https://gh2020.jrieke.com)
+
 **Share your Github stats for 2020 on Twitter**
 
 *🚀 Try it out: [gh2020.jrieke.com](http://gh2020.jrieke.com/) 🚀*
