@@ -123,3 +123,21 @@ div .bk-root .bk {
     /* margin-right: 120px !important; */
   }
 }
+
+
+/* Background color blink*/
+@keyframes blinking {
+  0% {
+    background-color: #32CD32;
+    color: #000000;
+  }
+  100% {
+    background-color: #FFFFFF;
+    color: #000000;
+  }
+}
+#update-color {
+  /* NAME | TIME | ITERATION */
+  animation: blinking 1s 1;
+  display: inline;
+}
