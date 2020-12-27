@@ -14,7 +14,9 @@ import content
 
 # Set up page.
 OCTOPUS_ICON = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png"
-st.set_page_config(page_title="My year on Github 2020", page_icon=OCTOPUS_ICON)
+st.set_page_config(
+    page_title="My year on Github 2020", page_icon=OCTOPUS_ICON, layout="wide"
+)
 utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
@@ -129,3 +131,12 @@ if username or (clicked and username):
     fineprint.write(
         content.construct_rate_limits(time.time() - start_time), unsafe_allow_html=True
     )
+
+
+st.markdown("<br><br> **Newest #gh2020 tweets**", unsafe_allow_html=True)
+st.markdown(
+    '<iframe src="http://twubs.com/embed/gh2020/?messagesPerPage=5&headerBgColor=%23'
+    '4d9feb&headerTextColor=%23000" width="470" height="500" frameborder="0"><a '
+    'href="http://twubs.com/Github">#Github</a></iframe>',
+    unsafe_allow_html=True,
+)
