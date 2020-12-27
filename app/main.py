@@ -3,12 +3,13 @@ Runs the streamlit app.
 """
 
 import time
+from typing import List
+
 import streamlit as st
 import github_reader
-import re
-import urllib
 
 import utils
+import content
 
 
 # Set up page.
@@ -41,7 +42,7 @@ tweet_button = st.empty()
 fineprint = st.empty()
 
 
-def show_checkboxes_external(external_repos):
+def show_checkboxes_external(external_repos: List[str]) -> List[str]:
     """Show checkboxes to select external repos that should be counted."""
     include_external = []
     if external_repos:
@@ -66,83 +67,7 @@ def show_checkboxes_external(external_repos):
     return include_external
 
 
-def show_fineprint(runtime=None):
-    """Show rate limits and runtime of the last action as fineprint."""
-    limits = github_reader.rate_limit_info()
-    s = """
-        <p align="right" id="fineprint">
-            Core: {core_remaining} (reset in {core_reset})<br>
-            GraphQL: {graphql_remaining} (reset in {graphql_reset})<br>
-        """.format(
-        **limits
-    )
-    if runtime is not None:
-        s += f"Runtime: {runtime:.2f} s"
-    s += "</p>"
-    fineprint.write(s, unsafe_allow_html=True)
-
-
-show_fineprint()
-
-
-# Define templates for the tweet (separate for user and org). These will be filled
-# with the stats later and shown in the box.
-# TODO: Maybe refactor templating stuff to separate file.
-# TODO: Write updating stats in green.
-# TODO: Write URL to hottest repo here? Would be cool to offer sth to click on,
-#   but it always shows the link preview in the tweet.
-# TODO: Encoding the 🧑‍💻 emoji in a link works in the browser but not on Android. Problem
-#   is probably the Twitter app, see if there's a workaround or replace emoji.
-user_template = """
-<p id="tweet">
-My year on Github 2020 🧑‍💻✨ {username}
-<br><br>
-📬 Commits/Issues/PRs: {contributions}<br>
-🏝️ Repos contributed to: {repos_contributed_to}<br>
-⭐ New stars: {new_stars}<br>
-🔥 Hottest repo: {hottest_repo}
-<br><br>
-Share your stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
-</p>
-"""
-
-org_template = """
-<p id="tweet">
-Our year on Github 2020 🧑‍💻✨ {username}
-<br><br>
-⭐ New stars: {new_stars}<br>
-🔥 Hottest repo: {hottest_repo}
-<br><br>
-Share your stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
-</p>
-"""
-
-
-def show_tweet(stats):
-    """Generate tweet based on `stats` and show the text plus a "Tweet it!" button."""
-
-    # Create tweet from template and show.
-    if stats["is_org"]:
-        tweet = org_template.format(**stats)
-    else:
-        tweet = user_template.format(**stats)
-    tweet_box.write(tweet, unsafe_allow_html=True)
-
-    # Create tweet link and show as button.
-    link = re.sub("<.*?>", "", tweet)  # remove html tags
-    link = link.strip()  # remove blank lines at start/end
-    link = urllib.parse.quote(link)  # encode for url
-    link = "https://twitter.com/intent/tweet?text=" + link
-    tweet_button.write(
-        f'<a id="twitter-link" href="{link}" target="_blank" rel="noopener noreferrer"><p align="center" id="twitter-button">🐦 Tweet it!</p></a>',
-        unsafe_allow_html=True,
-    )
-
-    # Create template to copy to clipboard.
-    # copy_template = re.sub("<.*?>", "", template)  # remove html tags
-    # copy_template = copy_template.strip()  # remove blank linkes at start/end
-    # copy_template = repr(copy_template)[1:-1]  # explicitly write newlines with \n
-    # st.bokeh_chart(copy_button)
+fineprint.write(content.construct_rate_limits(), unsafe_allow_html=True)
 
 
 # TODO: The 2nd part is actually a bit useless here. Clicking the button actually
@@ -177,7 +102,19 @@ if username or (clicked and username):
             progress_text.write(
                 f'<p id="progress-text">{progress_msg}</p>', unsafe_allow_html=True
             )
-            show_tweet(stats)
+
+            tweet_html = content.construct_tweet(stats)
+            tweet_box.write(
+                tweet_html,
+                unsafe_allow_html=True,
+            )
+
+        tweet_button_html = content.construct_tweet_button(tweet_html)
+        tweet_button.write(
+            tweet_button_html,
+            unsafe_allow_html=True,
+        )
+
         progress_bar.empty()
         progress_text.write("")
 
@@ -193,15 +130,6 @@ if username or (clicked and username):
         )
 
     # Show runtime of the query and remaining rate limits.
-    show_fineprint(time.time() - start_time)
-
-    # copy_text = copy_template.format(**stats)
-    # # TODO: This requires streamlit-nightly at the moment, because there's a bug that
-    # # shows bokeh charts twice. Remove streamlit-nightly from requirements as soon
-    # # as this is resolved. See https://github.com/streamlit/streamlit/issues/2337
-    # copy_button_bokeh = bokeh.models.widgets.Button(label="📋 Copy")
-    # copy_button_bokeh.js_on_event(
-    #     "button_click",
-    #     bokeh.models.CustomJS(code=f'navigator.clipboard.writeText("{copy_text}")'),
-    # )
-    # copy_button.bokeh_chart(copy_button_bokeh)
+    fineprint.write(
+        content.construct_rate_limits(time.time() - start_time), unsafe_allow_html=True
+    )
