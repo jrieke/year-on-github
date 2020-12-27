@@ -6,10 +6,10 @@ import time
 from typing import List
 
 import streamlit as st
-import github_reader
 
+import github_reader
 import utils
-import content
+import templates
 
 
 # Set up page.
@@ -67,7 +67,7 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
     return include_external
 
 
-fineprint.write(content.construct_rate_limits(), unsafe_allow_html=True)
+fineprint.write(templates.fineprint(), unsafe_allow_html=True)
 
 
 # TODO: The 2nd part is actually a bit useless here. Clicking the button actually
@@ -103,17 +103,11 @@ if username or (clicked and username):
                 f'<p id="progress-text">{progress_msg}</p>', unsafe_allow_html=True
             )
 
-            tweet_html = content.construct_tweet(stats)
-            tweet_box.write(
-                tweet_html,
-                unsafe_allow_html=True,
-            )
+            tweet_html = templates.tweet(stats)
+            tweet_box.write(tweet_html, unsafe_allow_html=True)
 
-        tweet_button_html = content.construct_tweet_button(tweet_html)
-        tweet_button.write(
-            tweet_button_html,
-            unsafe_allow_html=True,
-        )
+        tweet_button_html = templates.tweet_button(tweet_html)
+        tweet_button.write(tweet_button_html, unsafe_allow_html=True)
 
         progress_bar.empty()
         progress_text.write("")
@@ -131,5 +125,5 @@ if username or (clicked and username):
 
     # Show runtime of the query and remaining rate limits.
     fineprint.write(
-        content.construct_rate_limits(time.time() - start_time), unsafe_allow_html=True
+        templates.fineprint(time.time() - start_time), unsafe_allow_html=True
     )
