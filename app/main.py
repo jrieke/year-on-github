@@ -30,6 +30,7 @@ checkbox_count = st.empty()
 _, checkboxes_external = st.beta_columns([0.04, 0.96])
 progress_text = st.empty()
 progress_bar = st.empty()
+error_box = st.beta_container()
 tweet_box = st.empty()
 # col1, col2 = st.beta_columns(2)
 # twitter_button = col1.empty()
@@ -84,7 +85,8 @@ if username or (clicked and username):
     start_time = time.time()
     try:
         # Create a StatsMaker instance. This already queries some basic information
-        # about the user (e.g. its repos) but shouldn't take more than 1-3 s.
+        # about the user (e.g. its repos) from the Github API but shouldn't take more
+        # than 1-3 s.
         progress_bar.progress(0)
         progress_text.write(
             f'<p id="progress-text">Getting user: {username}</p>',
@@ -116,12 +118,23 @@ if username or (clicked and username):
         # Show an error message if the user doesn't exist.
         progress_bar.empty()
         progress_text.write("")
-        tweet_box.error(
+        error_box.error(
             f"""
             :octopus: **Octocrap!** Couldn't find user {username}. Did you make a typo 
             or [is this a bug](https://github.com/jrieke/my-year-on-github/issues)?
             """
         )
+    except Exception as e:
+        # Show an error message for any unexpected exceptions.
+        # Do not reset progress bar here, so the user can report when it stopped.
+        error_box.error(
+            f"""
+            :octopus: **Octocrap!** Something went wrong. Please
+            [open an issue on Github](https://github.com/jrieke/my-year-on-github/issues)
+            and report the error printed below.
+            """
+        )
+        error_box.write(e)
 
     # Show runtime of the query and remaining rate limits.
     fineprint.write(
