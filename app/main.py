@@ -105,11 +105,11 @@ if username or (clicked and username):
                 unsafe_allow_html=True,
             )
 
-            tweet_button_html = content.construct_tweet_button(tweet_html)
-            tweet_button.write(
-                tweet_button_html,
-                unsafe_allow_html=True,
-            )
+        tweet_button_html = content.construct_tweet_button(tweet_html)
+        tweet_button.write(
+            tweet_button_html,
+            unsafe_allow_html=True,
+        )
 
         progress_bar.empty()
         progress_text.write("")
