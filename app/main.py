@@ -17,10 +17,10 @@ st.set_page_config(page_title="My year on Github 2020", page_icon=OCTOPUS_ICON)
 utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
-st.write(
-    '<div class="sticky-header"><a href="https://github.com/jrieke/my-year-on-github/stargazers">Add your ⭐ on Github</a></div>',
-    unsafe_allow_html=True,
-)
+# st.write(
+#     '<div class="sticky-header">Built by <a href="https://twitter.com/jrieke">@jrieke</a></div>',
+#     unsafe_allow_html=True,
+# )
 st.image(OCTOPUS_ICON, width=100)
 st.title("Tweet your Github stats for 2020 ✨")
 username = st.text_input("Your Github username")
@@ -33,6 +33,10 @@ tweet_box = st.empty()
 # col1, col2 = st.beta_columns(2)
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
+star_text = st.write(
+    '<p align="left"><sub>If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/my-year-on-github/stargazers">give it a ⭐ on Github</a> :)</sub></p>',
+    unsafe_allow_html=True,
+)
 tweet_button = st.empty()
 fineprint = st.empty()
 
