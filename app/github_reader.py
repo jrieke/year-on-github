@@ -365,7 +365,7 @@ class StatsMaker:
             else:
                 raise RuntimeError()
 
-            progress = 0.2 + 0.8 * (i + 1) / len(repos_to_query)
+            progress = min(1.0, 0.2 + 0.8 * (i + 1) / len(repos_to_query))
             yield self._compute_stats(include_external), progress, progress_msg(i + 1)
 
         # Yield stats one more time, in case no repo was queried changed above.
