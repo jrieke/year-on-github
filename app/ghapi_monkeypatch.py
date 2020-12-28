@@ -6,7 +6,7 @@ import fastcore.net
 import json
 
 
-timeout_seconds = 10
+timeout_seconds = 15
 
 
 def urlopen(url, data=None, headers=None, **kwargs):
