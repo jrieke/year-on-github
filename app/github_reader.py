@@ -26,7 +26,7 @@ import utils
 # Monkey-patch ghapi/fastcore. This makes it raise a timeout error if an API request
 # through ghapi takes too long. Timeouts can happen sometimes when a user has lots of
 # repos.
-fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout=10)
+fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout=15)
 
 
 # Set up the Github REST API client.
