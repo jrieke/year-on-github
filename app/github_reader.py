@@ -10,32 +10,30 @@ import time
 from datetime import datetime
 import copy
 from typing import Dict, Tuple, List
+import functools
 
 from dotenv import load_dotenv
 import requests
 from fastcore.net import HTTP404NotFoundError
+import fastcore.net
 import streamlit as st
-import ghapi.core
+from ghapi.core import GhApi
 from ghapi.page import pages
 
 import utils
-import ghapi_monkeypatch
 
 
 # Monkey-patch ghapi/fastcore. This makes it raise a timeout error if an API request
 # through ghapi takes too long. Timeouts can happen sometimes when a user has lots of
 # repos.
-# TODO: This works but is pretty dirty/not good in case fastcore/ghapi changes. Find
-#   another way, e.g. by making custom request (but then we don't have all the utils,
-#   e.g. rate limit printing).
-ghapi.core.urlsend = ghapi_monkeypatch.urlsend
+fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout=10)
 
 
 # Set up the Github REST API client.
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
 load_dotenv()
-api = ghapi.core.GhApi(
+api = GhApi(
     token=os.getenv("GH_TOKEN"),
     limit_cb=lambda rem, quota: print(f"Quota remaining: {rem} of {quota}"),
 )
