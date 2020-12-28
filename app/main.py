@@ -4,6 +4,8 @@ Runs the streamlit app.
 
 import time
 from typing import List
+from socket import timeout
+from urllib.error import URLError
 
 import streamlit as st
 
@@ -108,8 +110,8 @@ if username or (clicked and username):
             tweet_html = templates.tweet(stats)
             tweet_box.write(tweet_html, unsafe_allow_html=True)
 
-        tweet_button_html = templates.tweet_button(tweet_html)
-        tweet_button.write(tweet_button_html, unsafe_allow_html=True)
+            tweet_button_html = templates.tweet_button(tweet_html)
+            tweet_button.write(tweet_button_html, unsafe_allow_html=True)
 
         progress_bar.empty()
         progress_text.write("")
@@ -124,9 +126,23 @@ if username or (clicked and username):
             or [is this a bug](https://github.com/jrieke/my-year-on-github/issues)?
             """
         )
+    except (timeout, URLError):  # these are the same
+        # Show an error message if there's a HTTP timeout. This can happen some time if
+        # we made lots of API requests in a few minutes.
+        error_box.error(
+            f"""
+            :octopus: **Octocrap!** Got a timeout from the Github API (can happen for 
+            many repos!). Please reload the page and enter your username again – 
+            the crawler will continue where it stopped. 
+            
+            If this keeps happening, 
+            [open an issue](https://github.com/jrieke/my-year-on-github/issues).
+            """
+        )
     except Exception as e:
         # Show an error message for any unexpected exceptions.
         # Do not reset progress bar here, so the user can report when it stopped.
+        # TODO: Fix margins for error_box, especially if tweet_box is also shown.
         error_box.error(
             f"""
             :octopus: **Octocrap!** Something went wrong. Please

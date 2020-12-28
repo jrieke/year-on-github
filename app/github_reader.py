@@ -11,21 +11,31 @@ from datetime import datetime
 import copy
 from typing import Dict, Tuple, List
 
-from ghapi.core import GhApi
-from ghapi.page import pages
 from dotenv import load_dotenv
 import requests
 from fastcore.net import HTTP404NotFoundError
 import streamlit as st
+import ghapi.core
+from ghapi.page import pages
 
 import utils
+import ghapi_monkeypatch
+
+
+# Monkey-patch ghapi/fastcore. This makes it raise a timeout error if an API request
+# through ghapi takes too long. Timeouts can happen sometimes when a user has lots of
+# repos.
+# TODO: This works but is pretty dirty/not good in case fastcore/ghapi changes. Find
+#   another way, e.g. by making custom request (but then we don't have all the utils,
+#   e.g. rate limit printing).
+ghapi.core.urlsend = ghapi_monkeypatch.urlsend
 
 
 # Set up the Github REST API client.
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
 load_dotenv()
-api = GhApi(
+api = ghapi.core.GhApi(
     token=os.getenv("GH_TOKEN"),
     limit_cb=lambda rem, quota: print(f"Quota remaining: {rem} of {quota}"),
 )
@@ -48,6 +58,10 @@ def rate_limit_info() -> Dict:
 
 
 class UserNotFoundError(Exception):
+    pass
+
+
+class TimeoutError(Exception):
     pass
 
 
@@ -187,9 +201,26 @@ def _query_repo(full_name: str, year: int) -> int:
 
     def get_stargazers(page: int):
         """Retrieves a page of stargazers from the Github API."""
-        # TODO: This throws an error when parsing very big and old repos, because very
-        # old records are not returned. E.g. sindresorhus/awesome has 150k stars,
-        # but it stops after around 400 pages. fastcore.basics.HTTP422UnprocessableEntityError
+        # TODO: This sometimes runs into a non-catched timeout when doing lots of
+        # requests, e.g. for huge repos (earlier it also threw a
+        # fastcore.basics.HTTP422UnprocessableEntityErrorbut not sure if this
+        # still happens). Three solutions to get around this:
+        #
+        # 1) Make manual timeout thing around it -> tried with `stopit` package, doesn't
+        #    work (the threaded version doesn't work because it's stuck in a single
+        #    method, the signal version doesn't work because streamlit spawns
+        #    subprocesses)
+        # 2) Monkey-patch ghapi or fastcore -> can't get it to work properly
+        # 3) Make custom request similar to below:
+        # import requests
+        # repo = "jrieke/traingenerator"
+        # page = 1
+        # headers = {"Accept": "application/vnd.github.v3.star+json"}
+        # # , "Authorization": f"token {os.getenv('GH_TOKEN')}"
+        # response = requests.get(f"https://api.github.com/repos/{repo}/stargazers?per_page=100&page={page}", headers=headers)
+        # print(len(response.json()))
+        # print(response.headers["link"])
+        # print(response.json()[:10])
         return api.activity.list_stargazers_for_repo(
             *full_name.split("/"),
             headers={"Accept": "application/vnd.github.v3.star+json"},
