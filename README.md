@@ -1,4 +1,4 @@
-# My year on Github 🧑‍💻
+# Year on Github 🧑‍💻
 
 [![Heroku App Status](http://heroku-shields.herokuapp.com/my-year-on-github)](http://gh2020.jrieke.com)
 

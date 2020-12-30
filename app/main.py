@@ -16,7 +16,7 @@ import templates
 
 # Set up page.
 OCTOPUS_ICON = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png"
-st.set_page_config(page_title="My year on Github 2020", page_icon=OCTOPUS_ICON)
+st.set_page_config(page_title="Year on Github 2020", page_icon=OCTOPUS_ICON)
 utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
