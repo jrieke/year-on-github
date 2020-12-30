@@ -7,7 +7,6 @@ import github_reader
 
 # Define templates for the tweet (separate for user and org). These will be filled
 # with the stats later and shown in the box.
-# TODO: Maybe refactor templating stuff to separate file.
 # TODO: Write updating stats in green.
 # TODO: Write URL to hottest repo here? Would be cool to offer sth to click on,
 #   but it always shows the link preview in the tweet.
