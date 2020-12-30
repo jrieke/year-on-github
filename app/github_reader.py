@@ -11,6 +11,7 @@ from datetime import datetime
 import copy
 from typing import Dict, Tuple, List
 import functools
+import random
 
 from dotenv import load_dotenv
 import requests
@@ -34,9 +35,16 @@ fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout
 # it's safer to install my fork (see README.md for instructions).
 load_dotenv()
 api = GhApi(
-    token=os.getenv("GH_TOKEN"),
+    token=random.choice(os.getenv("GH_TOKENS").split(",")),
     limit_cb=lambda rem, quota: print(f"Quota remaining: {rem} of {quota}"),
 )
+
+
+def _update_api_token():
+    """Update API to use a new, random token from the env variable GH_TOKENS."""
+    token = random.choice(os.getenv("GH_TOKENS").split(","))
+    api.headers["Authorization"] = f"token {token}"
+    return token
 
 
 def rate_limit_info() -> Dict:
@@ -116,7 +124,7 @@ def _query_user(username: str, year: int) -> Tuple:
         external_repo_stars = {}
     else:
         url = "https://api.github.com/graphql"
-        headers = {"Authorization": f"bearer {os.getenv('GH_TOKEN')}"}
+        headers = {"Authorization": api.headers["Authorization"]}
         query = f"""query {{
             user(login: "{username}") {{
                 contributionsCollection(from: "{year}-01-01T00:00:00Z", to: "{year}-12-31T23:59:59Z") {{
@@ -192,7 +200,7 @@ def _query_user(username: str, year: int) -> Tuple:
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
 def _query_repo(full_name: str, year: int) -> int:
     """Returns number of new stars in a year through binary search on the Github API."""
-
+    
     def get_stargazers(page: int):
         """Retrieves a page of stargazers from the Github API."""
         return api.activity.list_stargazers_for_repo(
@@ -289,6 +297,9 @@ class StatsMaker:
         functions cannot be included directly in this class because streamlit's
         caching mechanism wouldn't work properly then.
         """
+        
+        _update_api_token()
+        
         self.username = username
         self.year = year
 
