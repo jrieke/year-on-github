@@ -56,6 +56,10 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
         )
         if count:
             with checkboxes_external:
+                st.write(
+                    "<sub><i>Sorted by number of commits, highest first</i></sub>",
+                    unsafe_allow_html=True,
+                )
                 for repo in external_repos[:5]:
                     # Need to set custom key here so this doesn't keep state when
                     # querying for different users (only happens if they contributed to
