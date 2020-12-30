@@ -20,9 +20,9 @@ My year on Github 2020 🧑‍💻✨ {username}
 📬 Commits/Issues/PRs: {contributions}<br>
 🏝️ Repos contributed to: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
-🔥 Hottest repo: {hottest_repo}
+🔥 Hottest: {hottest_repo} (+{hottest_new_stars} ⭐)
 <br><br>
-Share your stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
+Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
 </p>
 """
 
@@ -31,9 +31,9 @@ ORG_TEMPLATE = """
 Our year on Github 2020 🧑‍💻✨ {username}
 <br><br>
 ⭐ New stars: {new_stars}<br>
-🔥 Hottest repo: {hottest_repo}
+🔥 Hottest: {hottest_repo}
 <br><br>
-Share your stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
+Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
 </p>
 """
 
