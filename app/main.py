@@ -6,6 +6,7 @@ import time
 from typing import List
 from socket import timeout
 from urllib.error import URLError
+from fastcore.net import HTTP403ForbiddenError
 
 import streamlit as st
 
@@ -135,12 +136,23 @@ if username or (clicked and username):
         # we made lots of API requests in a few minutes.
         error_box.error(
             f"""
-            :octopus: **Octocrap!** Got a timeout from the Github API (can happen for 
-            many repos!). Please reload the page and enter your username again – 
+            :octopus: **Octocrap!** Got a timeout from the Github API – this can happen
+            if you have large repos or too many people are using this site at the same 
+            time :/ You can just reload this site and enter your username again,
             the crawler will continue where it stopped. 
             
             If this keeps happening, 
             [open an issue](https://github.com/jrieke/my-year-on-github/issues).
+            """
+        )
+    except HTTP403ForbiddenError:
+        # Show an error message if we couldn't access the API - probably because we
+        # reached the rate limit.
+        error_box.error(
+            f"""
+            :octopus: **Octocrap!** Couldn't access the Github API – this can happen
+            if too many people are using this site at the same time :/ Try again
+            later or [open an issue](https://github.com/jrieke/my-year-on-github/issues).
             """
         )
     except Exception as e:
