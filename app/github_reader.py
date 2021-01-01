@@ -34,17 +34,24 @@ fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
 load_dotenv()
+if os.getenv("GH_TOKENS"):
+    GH_TOKENS = os.getenv("GH_TOKENS").split(",")
+    print(f"Found {len(GH_TOKENS)} token(s) for Github API")
+else:
+    raise RuntimeError(
+        "Couldn't find a token for Github API! Specify via env variable GH_TOKENS"
+    )
+
 api = GhApi(
-    token=random.choice(os.getenv("GH_TOKENS").split(",")),
+    token=random.choice(GH_TOKENS),
     limit_cb=lambda rem, quota: print(f"Quota remaining: {rem} of {quota}"),
 )
 
 
 def _update_api_token():
     """Update API to use a new, random token from the env variable GH_TOKENS."""
-    token = random.choice(os.getenv("GH_TOKENS").split(","))
-    api.headers["Authorization"] = f"token {token}"
-    return token
+    api.headers["Authorization"] = f"token {random.choice(GH_TOKENS)}"
+    print("Switched API token")
 
 
 def rate_limit_info() -> Dict:
@@ -124,7 +131,10 @@ def _query_user(username: str, year: int) -> Tuple:
         external_repo_stars = {}
     else:
         url = "https://api.github.com/graphql"
-        headers = {"Authorization": api.headers["Authorization"]}
+        if "Authorization" in api.headers:
+            headers = {"Authorization": api.headers["Authorization"]}
+        else:
+            headers = {}
         query = f"""query {{
             user(login: "{username}") {{
                 contributionsCollection(from: "{year}-01-01T00:00:00Z", to: "{year}-12-31T23:59:59Z") {{
@@ -200,7 +210,7 @@ def _query_user(username: str, year: int) -> Tuple:
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
 def _query_repo(full_name: str, year: int) -> int:
     """Returns number of new stars in a year through binary search on the Github API."""
-    
+
     def get_stargazers(page: int):
         """Retrieves a page of stargazers from the Github API."""
         return api.activity.list_stargazers_for_repo(
@@ -297,9 +307,9 @@ class StatsMaker:
         functions cannot be included directly in this class because streamlit's
         caching mechanism wouldn't work properly then.
         """
-        
+
         _update_api_token()
-        
+
         self.username = username
         self.year = year
 
