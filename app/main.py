@@ -29,8 +29,8 @@ st.image(OCTOPUS_ICON, width=100)
 st.title("Tweet your Github stats for 2020 ✨")
 username = st.text_input("Your Github username")
 clicked = st.button("Show preview")
-checkbox_count = st.empty()
-_, checkboxes_external = st.beta_columns([0.04, 0.96])
+# checkbox_count = st.empty()
+checkboxes_external = st.beta_container()
 progress_text = st.empty()
 progress_bar = st.empty()
 error_box = st.beta_container()
@@ -39,7 +39,7 @@ tweet_box = st.empty()
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
 star_text = st.write(
-    '<p align="left"><sub>If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/my-year-on-github/stargazers">give it a ⭐ on Github</a> :)</sub></p>',
+    '<span class="small-text">If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/my-year-on-github/stargazers">give it a ⭐ on Github</a> :)</span>',
     unsafe_allow_html=True,
 )
 tweet_button = st.empty()
@@ -52,26 +52,28 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
     if external_repos:
         # Need to set custom key here so this doesn't keep state when querying for
         # different users.
-        count = checkbox_count.checkbox(
-            "Count stars of external repos I contributed to", key="count" + username
-        )
-        if count:
-            with checkboxes_external:
-                st.write(
-                    "<sub><i>Sorted by number of commits, highest first</i></sub>",
-                    unsafe_allow_html=True,
-                )
-                for repo in external_repos[:5]:
-                    # Need to set custom key here so this doesn't keep state when
-                    # querying for different users (only happens if they contributed to
-                    # the same repo).
-                    if st.checkbox(repo, key="external" + username + repo):
-                        include_external.append(repo)
-                if len(external_repos) > 5:
-                    with st.beta_expander("Show more"):
-                        for repo in external_repos[5:]:
-                            if st.checkbox(repo, key="external" + username + repo):
-                                include_external.append(repo)
+        with checkboxes_external:
+            count = st.checkbox(
+                "Count stars of external repos I contributed to", key="count" + username
+            )
+            if count:
+                _, col = st.beta_columns([0.05, 0.95])
+                with col:
+                    st.write(
+                        '<span class="small-text"><i>Sorted by number of commits, highest first</i></span>',
+                        unsafe_allow_html=True,
+                    )
+                    for repo in external_repos[:5]:
+                        # Need to set custom key here so this doesn't keep state when
+                        # querying for different users (only happens if they contributed to
+                        # the same repo).
+                        if st.checkbox(repo, key="external" + username + repo):
+                            include_external.append(repo)
+                    if len(external_repos) > 5:
+                        with st.beta_expander("Show more"):
+                            for repo in external_repos[5:]:
+                                if st.checkbox(repo, key="external" + username + repo):
+                                    include_external.append(repo)
     return include_external
 
 
@@ -85,9 +87,6 @@ if username or (clicked and username):
 
     # Hide some components in case they are already shown but a new username is queried.
     tweet_button.write("")
-    checkbox_count.empty()
-    checkboxes_external.empty()
-    # copy_button.write("")
 
     start_time = time.time()
     try:

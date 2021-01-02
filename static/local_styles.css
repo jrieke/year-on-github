@@ -2,11 +2,15 @@
   max-width: 440px;
 }
 
+.small-text {
+  font-size: 0.8rem;
+}
+
 a {
   text-decoration: none;
 }
 
-.sticky-header {
+/* .sticky-header {
   position: fixed;
   top: 0;
   width: 100%;
@@ -19,7 +23,7 @@ a {
   background-color: white;
   color: gray;
   font-size: 10pt;
-}
+} */
 
 h1 {
   line-height: 1.5;
