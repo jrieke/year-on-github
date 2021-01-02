@@ -127,30 +127,31 @@ def _query_user(username: str, year: int) -> Tuple:
         # For orgs: Count number of contributors across all repos.
         # TODO: For large orgs, this can take a significant amount of time. Should show
         #   progress in more detail here.
-        year_start = datetime(year, 1, 1, 0, 0, 0)
-        year_end = datetime(year, 12, 31, 23, 59, 59)
-        repo_contributor_names = set()
-        # TODO: This only returns the 100 most active contributors and there's no
-        #   way to get more, i.e. it doesn't work for very popular repos. Maybe look for 
-        #   another way to do this.
-        contributors = api.repos.get_contributors_stats(repo.owner.login, repo.name)
-        if len(contributors) == 100:
-            contributors_greater_than = True
-        for contributor in contributors:
-            # print(
-            #     f"Analyzing contributor f{contributor.author.login} ({contributor.total} contributions)"
-            # )
-            for week_stats in contributor.weeks:
-                week = datetime.fromtimestamp(int(week_stats.w))
-                if week_stats.c > 0 and week > year_start and week < year_end:
-                    # print(f"Found {week_stats.c} contributions in week {week}")
-                    # print()
-                    repo_contributor_names.add(contributor.author.login)
-                    break
-        print(f"Found {len(repo_contributor_names)} contributors")
-        contributor_names |= repo_contributor_names
-        
-        print()
+        if is_org:
+            year_start = datetime(year, 1, 1, 0, 0, 0)
+            year_end = datetime(year, 12, 31, 23, 59, 59)
+            repo_contributor_names = set()
+            # TODO: This only returns the 100 most active contributors and there's no
+            #   way to get more, i.e. it doesn't work for very popular repos. Maybe look for 
+            #   another way to do this.
+            contributors = api.repos.get_contributors_stats(repo.owner.login, repo.name)
+            if len(contributors) == 100:
+                contributors_greater_than = True
+            for contributor in contributors:
+                # print(
+                #     f"Analyzing contributor f{contributor.author.login} ({contributor.total} contributions)"
+                # )
+                for week_stats in contributor.weeks:
+                    week = datetime.fromtimestamp(int(week_stats.w))
+                    if week_stats.c > 0 and week > year_start and week < year_end:
+                        # print(f"Found {week_stats.c} contributions in week {week}")
+                        # print()
+                        repo_contributor_names.add(contributor.author.login)
+                        break
+            print(f"Found {len(repo_contributor_names)} contributors")
+            contributor_names |= repo_contributor_names
+            
+            print()
 
     # 3) Query GraphQL API to get contribution counts + external repos.
     if is_org:
