@@ -14,25 +14,26 @@ import github_reader
 #   is probably the Twitter app, see if there's a workaround or replace emoji.
 USER_TEMPLATE = """
 <p id="tweet">
-My year on Github 2020 🧑‍💻✨ {username}
+My year on <a href="https://twitter.com/search?q=%23github2020">#github2020</a> 🐙 {username}
 <br><br>
 📬 Commits/Issues/PRs: {contributions}<br>
 🏝️ Repos contributed to: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
-🔥 Hottest: {hottest_repo} (+{hottest_new_stars} ⭐)
+🔥 Hottest: {hottest_repo} (+{hottest_new_stars})
 <br><br>
-Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
+Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
 ORG_TEMPLATE = """
 <p id="tweet">
-Our year on Github 2020 🧑‍💻✨ {username}
+Our year on <a href="https://twitter.com/search?q=%23github2020">#github2020</a> 🐙 {username}
 <br><br>
+👷 Contributors: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
-🔥 Hottest: {hottest_repo} (+{hottest_new_stars} ⭐)
+🔥 Hottest: {hottest_repo} (+{hottest_new_stars})
 <br><br>
-Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://twitter.com/github">@github</a> | <a href="https://twitter.com/search?q=%23github2020">#github2020</a>
+Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
