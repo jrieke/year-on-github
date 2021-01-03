@@ -16,7 +16,7 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
     <a href="http://gh2020.jrieke.com/"><img src="images/preview.png" width=500></a>
 </p>
 
-*For updates, [follow me on Twitter](https://twitter.com/jrieke), and if you like this project, please consider [donating](https://github.com/sponsors/jrieke) ☺️*
+*For updates, [follow me on Twitter](https://twitter.com/jrieke), and if you like this project, please [consider donating](https://github.com/sponsors/jrieke) ☺️*
 
 <br>
 
