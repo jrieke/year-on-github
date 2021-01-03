@@ -1,6 +1,6 @@
 # Year on Github 🐙
 
-[![Heroku App Status](http://heroku-shields.herokuapp.com/my-year-on-github)](http://gh2020.jrieke.com)
+[![Heroku App Status](http://heroku-shields.herokuapp.com/year-on-github)](http://gh2020.jrieke.com)
 
 **Share your Github stats for 2020 on Twitter.**
 
