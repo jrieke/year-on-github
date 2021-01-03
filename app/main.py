@@ -43,6 +43,19 @@ star_text = st.write(
     unsafe_allow_html=True,
 )
 tweet_button = st.empty()
+
+# Show tweets with #Github2020 through twubs.
+# st.write("---")
+# st.write("## What others tweeted")
+# st.markdown(
+#     """
+#     <iframe src="http://twubs.com/embed/Github2020/?messagesPerPage=5&headerBgColor=%23fff&headerTextColor=%23bbb" width="420" height="500" frameborder="0">
+#         <a href="http://twubs.com/Github">#Github</a>
+#     </iframe>
+#     """,
+#     unsafe_allow_html=True,
+# )
+
 fineprint = st.empty()
 
 
