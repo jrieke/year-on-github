@@ -3,6 +3,7 @@ Runs the streamlit app.
 """
 
 import time
+import os
 from typing import List
 from socket import timeout
 from urllib.error import URLError
@@ -183,4 +184,11 @@ if username or (clicked and username):
     # Show runtime of the query and remaining rate limits.
     fineprint.write(
         templates.fineprint(time.time() - start_time), unsafe_allow_html=True
+    )
+
+
+# Tracking pixel to count number of visitors.
+if os.getenv("TRACKING_NAME"):
+    st.write(
+        f"![](https://jrieke.goatcounter.com/count?p={os.getenv('TRACKING_NAME')})"
     )
