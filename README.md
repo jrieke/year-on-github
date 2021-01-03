@@ -18,6 +18,7 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 
 *For updates, [follow me on Twitter](https://twitter.com/jrieke), and if you like this project, you can [buy me a coffee](https://www.buymeacoffee.com/jrieke) ☺️*
 
+<br>
 
 ---
 
