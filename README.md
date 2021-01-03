@@ -1,4 +1,4 @@
-# Year on Github 🐙
+# Year on Github :octocat:
 
 [![Heroku App Status](http://heroku-shields.herokuapp.com/year-on-github)](http://gh2020.jrieke.com)
 
