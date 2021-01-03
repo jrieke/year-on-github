@@ -15,9 +15,13 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 </p>
 
 <h3 align="center">
+    🎉 year-on-github is now live! 🎉
+    <br><br>
     Try it out: <br>
-    <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a>
+    <a href="http://gh2020.jrieke.com">gh2020.jrieke.com</a>
 </h3>
+
+<br>
 
 *For updates, [follow me on Twitter](https://twitter.com/jrieke), and if you like this project, please [consider sponsoring](https://github.com/sponsors/jrieke) ☺️*
 
