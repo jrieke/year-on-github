@@ -71,6 +71,10 @@ button {
   background-color: #4d9feb;
 } */
 
+.stAlert {
+  margin-bottom: 20px;
+}
+
 #tweet {
   margin-top: -10px;
   /* margin-bottom: 20px; */
