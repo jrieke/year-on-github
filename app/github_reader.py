@@ -48,7 +48,7 @@ api = GhApi(
 )
 
 
-def _update_api_token():
+def switch_api_token():
     """Update API to use a new, random token from the env variable GH_TOKENS."""
     api.headers["Authorization"] = f"token {random.choice(GH_TOKENS)}"
     print("Switched API token")
@@ -90,6 +90,7 @@ def _query_user(username: str, year: int) -> Tuple:
     # 1) Query REST API to find out if the user is an organization. This has to be done
     #    first because the following queries are different for users and orgs.
     try:
+        switch_api_token()
         user = api.users.get_by_username(username)
     except HTTP404NotFoundError:
         raise UserNotFoundError(
@@ -106,6 +107,7 @@ def _query_user(username: str, year: int) -> Tuple:
     contributors_greater_than = False
     endpoint = api.repos.list_for_org if is_org else api.repos.list_for_user
     num_pages = 1 + int(num_repos / 100)
+    switch_api_token()
     for repo in pages(endpoint, num_pages, username).concat():
 
         print(
@@ -132,8 +134,9 @@ def _query_user(username: str, year: int) -> Tuple:
             year_end = datetime(year, 12, 31, 23, 59, 59)
             repo_contributor_names = set()
             # TODO: This only returns the 100 most active contributors and there's no
-            #   way to get more, i.e. it doesn't work for very popular repos. Maybe look for 
+            #   way to get more, i.e. it doesn't work for very popular repos. Maybe look for
             #   another way to do this.
+            switch_api_token()
             contributors = api.repos.get_contributors_stats(repo.owner.login, repo.name)
             if len(contributors) == 100:
                 contributors_greater_than = True
@@ -150,7 +153,7 @@ def _query_user(username: str, year: int) -> Tuple:
                         break
             print(f"Found {len(repo_contributor_names)} contributors")
             contributor_names |= repo_contributor_names
-            
+
             print()
 
     # 3) Query GraphQL API to get contribution counts + external repos.
@@ -246,6 +249,7 @@ def _query_repo(full_name: str, year: int) -> int:
 
     def get_stargazers(page: int):
         """Retrieves a page of stargazers from the Github API."""
+        switch_api_token()
         return api.activity.list_stargazers_for_repo(
             *full_name.split("/"),
             headers={"Accept": "application/vnd.github.v3.star+json"},
@@ -340,8 +344,6 @@ class StatsMaker:
         functions cannot be included directly in this class because streamlit's
         caching mechanism wouldn't work properly then.
         """
-
-        _update_api_token()
 
         self.username = username
         self.year = year
