@@ -24,9 +24,9 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 
 <br>
 
-**Note: The steps below are only required if you want to work on the app. If you just want to use it, go [here](http://gh2020.jrieke.com/).**
-
 ## Installation
+
+**Note: Only required if you want to work on the app. If you just want to use it, go [here](http://gh2020.jrieke.com/).**
 
 ```bash
 git clone https://github.com/jrieke/my-year-on-github.git
