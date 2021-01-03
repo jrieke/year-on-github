@@ -10,11 +10,14 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 [ghapi](https://ghapi.fast.ai/), and let's you share the generated stats directly on 
 [Twitter](https://twitter.com/).
 
-*🚀 Try it out: [gh2020.jrieke.com](http://gh2020.jrieke.com/) 🚀*
-
 <p align="center">
     <a href="http://gh2020.jrieke.com/"><img src="images/preview.png" width=500></a>
 </p>
+
+<h3 align="center">
+    Try it out: <br>
+    <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a>
+</h3>
 
 *For updates, [follow me on Twitter](https://twitter.com/jrieke), and if you like this project, please [consider sponsoring](https://github.com/sponsors/jrieke) ☺️*
 
