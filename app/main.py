@@ -40,7 +40,7 @@ tweet_box = st.empty()
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
 star_text = st.write(
-    '<span class="small-text">If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/my-year-on-github/stargazers">give it a ⭐ on Github</a> :)</span>',
+    '<span class="small-text">If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/year-on-github">give it a ⭐ on Github</a> :)</span>',
     unsafe_allow_html=True,
 )
 tweet_button = st.empty()
