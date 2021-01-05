@@ -45,17 +45,17 @@ star_text = st.write(
 )
 tweet_button = st.empty()
 
-# Show tweets with #Github2020 through twubs.
-# st.write("---")
-# st.write("## What others tweeted")
-# st.markdown(
-#     """
-#     <iframe src="http://twubs.com/embed/Github2020/?messagesPerPage=5&headerBgColor=%23fff&headerTextColor=%23bbb" width="420" height="500" frameborder="0">
-#         <a href="http://twubs.com/Github">#Github</a>
-#     </iframe>
-#     """,
-#     unsafe_allow_html=True,
-# )
+# Show tweets from Twitter bot (@gh2020_bot). The content of the iframe is hosted in
+# a small Github pages site from this repo: https://github.com/jrieke/gh2020-tweet-wall
+st.write("---")
+st.markdown(
+    """
+    <div style="display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden;">
+        <iframe height="1000" style="margin-left: -15px;" src="http://www.jrieke.com/gh2020-tweet-wall/"></iframe>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 fineprint = st.empty()
 
