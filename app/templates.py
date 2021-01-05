@@ -21,7 +21,7 @@ My year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a> 
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest_repo} (+{hottest_new_stars})
 <br><br>
-Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
+Share yours: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
@@ -33,7 +33,7 @@ Our year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a>
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest_repo} (+{hottest_new_stars})
 <br><br>
-Share your own stats: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
+Share yours: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
@@ -63,10 +63,11 @@ def tweet(stats: Dict) -> str:
     return tweet_html
 
 
-def tweet_button(tweet_html: str) -> str:
+def tweet_button(tweet_html: str, username: str) -> str:
     """Generate tweet button html based on tweet html text."""
     link = re.sub("<.*?>", "", tweet_html)  # remove html tags
     link = link.strip()  # remove blank lines at start/end
+    link += " https://github.com/" + username  # attach link to profile (to show card)
     link = urllib.parse.quote(link)  # encode for url
     link = "https://twitter.com/intent/tweet?text=" + link
     tweet_button_html = (

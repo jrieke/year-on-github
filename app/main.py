@@ -128,7 +128,7 @@ if username or (clicked and username):
             tweet_html = templates.tweet(stats)
             tweet_box.write(tweet_html, unsafe_allow_html=True)
 
-            tweet_button_html = templates.tweet_button(tweet_html)
+            tweet_button_html = templates.tweet_button(tweet_html, username)
             tweet_button.write(tweet_button_html, unsafe_allow_html=True)
 
         progress_bar.empty()
