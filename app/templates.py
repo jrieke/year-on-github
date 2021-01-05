@@ -7,11 +7,6 @@ import github_reader
 
 # Define templates for the tweet (separate for user and org). These will be filled
 # with the stats later and shown in the box.
-# TODO: Write updating stats in green.
-# TODO: Write URL to hottest repo here? Would be cool to offer sth to click on,
-#   but it always shows the link preview in the tweet.
-# TODO: Encoding the 🧑‍💻 emoji in a link works in the browser but not on Android. Problem
-#   is probably the Twitter app, see if there's a workaround or replace emoji.
 USER_TEMPLATE = """
 <p id="tweet">
 My year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a> 🐙 {username}
@@ -85,7 +80,7 @@ def tweet_button(tweet_html: str, username: str) -> str:
 #     st.bokeh_chart(copy_button)
 # Code for copy button in mains ccript:
 # copy_text = copy_template.format(**stats)
-# # TODO: This requires streamlit-nightly at the moment, because there's a bug that
+# # This requires streamlit-nightly at the moment, because there's a bug that
 # # shows bokeh charts twice. Remove streamlit-nightly from requirements as soon
 # # as this is resolved. See https://github.com/streamlit/streamlit/issues/2337
 # copy_button_bokeh = bokeh.models.widgets.Button(label="📋 Copy")

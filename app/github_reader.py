@@ -158,7 +158,6 @@ def _query_user(username: str, year: int) -> Tuple:
 
     # 3) Query GraphQL API to get contribution counts + external repos.
     if is_org:
-        # TODO: Maybe count commits (+ maybe issues/prs) for this year across all repos.
         contributions = 0
         # TODO: Temporarily storing this in `repos_contributed_to`, rename if I keep it.
         repos_contributed_to = len(contributor_names)
@@ -207,8 +206,6 @@ def _query_user(username: str, year: int) -> Tuple:
             for item in contrib_collection["commitContributionsByRepository"]
             if item["repository"]["nameWithOwner"].split("/")[0] != username
         ]
-
-        # TODO: Maybe pass number of commits outside as well and show it in checkboxes.
 
         # Parse external repos but do not do binary search here (it's too expensive
         # and will be done later when required).
@@ -363,12 +360,7 @@ class StatsMaker:
         self.external_repo_stars = copy.deepcopy(external_repo_stars)
 
         # Make a list with the names of external repos.
-        # TODO: Check again that this is ordered by the number of contributions.
         self.external_repos = list(self.external_repo_stars.keys())
-
-        # TODO:
-        # - contributions -> for org: contributions to all its repos
-        # - num of repos contributed to -> for org: number of repos that the org owns that were contributed to
 
     def stream(self, include_external: List = None):
         """

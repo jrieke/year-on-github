@@ -171,7 +171,6 @@ if username or (clicked and username):
     except Exception as e:
         # Show an error message for any unexpected exceptions.
         # Do not reset progress bar here, so the user can report when it stopped.
-        # TODO: Fix margins for error_box, especially if tweet_box is also shown.
         error_box.error(
             f"""
             :octopus: **Octocrap!** Something went wrong. Please
