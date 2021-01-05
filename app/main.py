@@ -51,7 +51,7 @@ st.write("---")
 st.markdown(
     """
     <div style="display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden;">
-        <iframe height="1000" style="margin-left: -15px;" src="http://www.jrieke.com/gh2020-tweet-wall/"></iframe>
+        <iframe height="1000" style="margin-left: -15px;" src="https://www.jrieke.com/gh2020-tweet-wall/"></iframe>
     </div>
     """,
     unsafe_allow_html=True,
