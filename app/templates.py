@@ -62,7 +62,7 @@ def tweet_button(tweet_html: str, username: str) -> str:
     """Generate tweet button html based on tweet html text."""
     link = re.sub("<.*?>", "", tweet_html)  # remove html tags
     link = link.strip()  # remove blank lines at start/end
-    link += " https://github.com/" + username  # attach link to profile (to show card)
+    # link += " https://github.com/" + username  # attach link to profile (to show card)
     link = urllib.parse.quote(link)  # encode for url
     link = "https://twitter.com/intent/tweet?text=" + link
     tweet_button_html = (
