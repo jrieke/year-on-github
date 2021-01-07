@@ -154,7 +154,7 @@ def _query_user(username: str, year: int) -> Tuple:
             print(f"Found {len(repo_contributor_names)} contributors")
             contributor_names |= repo_contributor_names
 
-            print()
+        print()
 
     # 3) Query GraphQL API to get contribution counts + external repos.
     if is_org:
@@ -243,6 +243,8 @@ def _query_user(username: str, year: int) -> Tuple:
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
 def _query_repo(full_name: str, year: int) -> int:
     """Returns number of new stars in a year through binary search on the Github API."""
+    
+    print(full_name)
 
     def get_stargazers(page: int):
         """Retrieves a page of stargazers from the Github API."""
@@ -271,6 +273,7 @@ def _query_repo(full_name: str, year: int) -> int:
 
     if num_pages == 1:  # only one page
         print("Total new stars:", new_stars)
+        print()
         return new_stars
     elif new_stars > 0 and new_stars < len(stargazers):  # break is on first page
         print("Found year break on first page")
@@ -283,6 +286,7 @@ def _query_repo(full_name: str, year: int) -> int:
             new_stars += (num_pages - 2) * 100
 
         print("Total new stars:", new_stars)
+        print()
         return new_stars
     else:
         # If there's more than 1 page: Use binary search to find the page that contains
@@ -329,6 +333,7 @@ def _query_repo(full_name: str, year: int) -> int:
             new_stars += (num_pages - 1 - page) * 100
 
         print("Total new stars:", new_stars)
+        print()
         return new_stars
 
 
@@ -407,9 +412,9 @@ class StatsMaker:
         # Perform the queries, store results and yield intermediate performance.
         for i, repo in enumerate(repos_to_query):
             # TODO: Maybe print in _query_repo instead.
-            print(repo)
+            # print(repo)
             new_stars = _query_repo(repo, self.year)
-            print()
+            # print()
 
             if repo in self.own_repo_stars:
                 self.own_repo_stars[repo] = new_stars
