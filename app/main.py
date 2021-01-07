@@ -8,6 +8,7 @@ from typing import List
 from socket import timeout
 from urllib.error import URLError
 from fastcore.net import HTTP403ForbiddenError
+import traceback
 
 import streamlit as st
 
@@ -94,6 +95,18 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
 fineprint.write(templates.fineprint(), unsafe_allow_html=True)
 
 
+def print_error(e, print_traceback=False):
+    """Logs error to stdout, so it's not only shown to the user through streamlit."""
+    print()
+    print("=" * 80)
+    print(f"ERROR for user {username}:", e)
+    if print_traceback:
+        print()
+        traceback.print_exc()
+    print("=" * 80)
+    print()
+
+
 # TODO: The 2nd part is actually a bit useless here. Clicking the button actually
 #   doesn't change a critical value but it just updates the page so the username
 #   value is passed on properly.
@@ -134,7 +147,7 @@ if username or (clicked and username):
         progress_bar.empty()
         progress_text.write("")
 
-    except github_reader.UserNotFoundError:
+    except github_reader.UserNotFoundError as e:
         # Show an error message if the user doesn't exist.
         progress_bar.empty()
         progress_text.write("")
@@ -144,7 +157,8 @@ if username or (clicked and username):
             or [is this a bug](https://github.com/jrieke/my-year-on-github/issues)?
             """
         )
-    except (timeout, URLError):  # these are the same
+        print_error(e)
+    except (timeout, URLError) as e:  # these are the same
         # Show an error message if there's a HTTP timeout. This can happen some time if
         # we made lots of API requests in a few minutes.
         error_box.error(
@@ -158,7 +172,8 @@ if username or (clicked and username):
             [open an issue](https://github.com/jrieke/my-year-on-github/issues).
             """
         )
-    except HTTP403ForbiddenError:
+        print_error(e)
+    except HTTP403ForbiddenError as e:
         # Show an error message if we couldn't access the API - probably because we
         # reached the rate limit.
         error_box.error(
@@ -168,6 +183,7 @@ if username or (clicked and username):
             later or [open an issue](https://github.com/jrieke/my-year-on-github/issues).
             """
         )
+        print_error(e)
     except Exception as e:
         # Show an error message for any unexpected exceptions.
         # Do not reset progress bar here, so the user can report when it stopped.
@@ -179,6 +195,7 @@ if username or (clicked and username):
             """
         )
         error_box.write(e)
+        print_error(e, print_traceback=True)
 
     # Show runtime of the query and remaining rate limits.
     fineprint.write(
