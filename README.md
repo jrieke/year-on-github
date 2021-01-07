@@ -1,8 +1,8 @@
-# Year on Github
+# Year on Github &nbsp;🐙
 
 [![Heroku App Status](http://heroku-shields.herokuapp.com/year-on-github)](http://gh2020.jrieke.com)
 
-**:octocat: Share your Github stats for 2020 on Twitter.**
+**Share your Github stats for 2020 on Twitter.**
 
 This project contains a small web app that let's you share stats about your Github 
 activity from last year. It's like Spotify's "year in review" but for Github. The app 
