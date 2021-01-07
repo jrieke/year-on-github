@@ -1,4 +1,4 @@
-# Year on Github &nbsp;🐙
+# Year on Github 🐙
 
 [![Heroku App Status](http://heroku-shields.herokuapp.com/year-on-github)](http://gh2020.jrieke.com)
 
@@ -25,7 +25,7 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 
 <br>
 
-*For updates, [follow me on Twitter](https://twitter.com/jrieke), and if you like this project, please [consider sponsoring](https://github.com/sponsors/jrieke) ☺️*
+*For updates [follow me on Twitter](https://twitter.com/jrieke) and if you like this project, please [consider sponsoring](https://github.com/sponsors/jrieke) ☺️*
 
 <br>
 
