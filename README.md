@@ -10,9 +10,7 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 [ghapi](https://ghapi.fast.ai/), and let's you share the generated stats directly on 
 [Twitter](https://twitter.com/).
 
-<p align="center">
-    <a href="http://gh2020.jrieke.com/"><img src="images/preview.png" width=500></a>
-</p>
+<br>
 
 <h3 align="center">
     🎉 Year on Github is now live! 🎉
@@ -20,6 +18,10 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
     Try it out: <br>
     <a href="http://gh2020.jrieke.com">gh2020.jrieke.com</a>
 </h3>
+
+<p align="center">
+    <a href="http://gh2020.jrieke.com/"><img src="images/demo.gif" width=700></a>
+</p>
 
 <br>
 
