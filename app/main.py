@@ -9,6 +9,7 @@ from socket import timeout
 from urllib.error import URLError
 from fastcore.net import HTTP403ForbiddenError
 import traceback
+import warnings
 
 import streamlit as st
 
@@ -132,17 +133,25 @@ if username or (clicked and username):
 
         # Stream stats from stats_maker, generate tweet from template and show it.
         # The `stream` method is a generator which yields intermediate results.
-        for stats, progress, progress_msg in stats_maker.stream(include_external):
-            progress_bar.progress(progress)
-            progress_text.write(
-                f'<p id="progress-text">{progress_msg}</p>', unsafe_allow_html=True
-            )
+        with warnings.catch_warnings(record=True) as w:
+            for stats, progress, progress_msg in stats_maker.stream(include_external):
+                progress_bar.progress(progress)
+                progress_text.write(
+                    f'<p id="progress-text">{progress_msg}</p>', unsafe_allow_html=True
+                )
 
-            tweet_html = templates.tweet(stats)
-            tweet_box.write(tweet_html, unsafe_allow_html=True)
+                tweet_html = templates.tweet(stats)
+                tweet_box.write(tweet_html, unsafe_allow_html=True)
 
-            tweet_button_html = templates.tweet_button(tweet_html, username)
-            tweet_button.write(tweet_button_html, unsafe_allow_html=True)
+                tweet_button_html = templates.tweet_button(tweet_html, username)
+                tweet_button.write(tweet_button_html, unsafe_allow_html=True)
+
+            # Print warning if any was catched.
+            if w:
+                error_box.warning(w[0].message)
+                print("=" * 80)
+                print(f"WARNING for user {username}:", w[0].message)
+                print("=" * 80)
 
         progress_bar.empty()
         progress_text.write("")
@@ -201,7 +210,6 @@ if username or (clicked and username):
     fineprint.write(
         templates.fineprint(time.time() - start_time), unsafe_allow_html=True
     )
-
 
 # Tracking pixel to count number of visitors.
 if os.getenv("TRACKING_NAME"):

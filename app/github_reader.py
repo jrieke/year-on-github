@@ -12,6 +12,7 @@ import copy
 from typing import Dict, Tuple, List
 import functools
 import random
+import warnings
 
 from dotenv import load_dotenv
 import requests
@@ -270,6 +271,12 @@ def _query_repo(full_name: str, year: int) -> int:
     new_stars = count_new(stargazers)
     num_pages = max(1, api.last_page())  # ghapi returns 0 here if there's only 1 page
     print("Total pages:", num_pages)
+    
+    # TODO: This doesn't work when the result is cached.
+    if num_pages == 400:
+        warnings.warn("⚠️ You selected a repo with >40k stars. Due to a limitation in "
+                      "the Github API, it's not possible to count all new stars for "
+                      "this repo. The numbers below may be a bit off.")
 
     if num_pages == 1:  # only one page
         print("Total new stars:", new_stars)
