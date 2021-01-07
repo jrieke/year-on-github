@@ -443,11 +443,17 @@ class StatsMaker:
 
         # Find hottest repo (= the one with the most new stars).
         if new_stars > 0:
-            hottest = max(all_repo_stars.items(), key=lambda item: item[1])
-            hottest_repo, hottest_new_stars = hottest
+            hottest_repo_stars = max(all_repo_stars.items(), key=lambda item: item[1])
+            hottest = f"{hottest_repo_stars[0]} (+{hottest_repo_stars[1]})"
+        elif len(all_repo_stars) > 0:
+            # If no new stars, just choose the first repo (and do not display stars).
+            # TODO: Choose repo with most stars overall. But need to save this somewhere
+            #    above, otherwise it would mean a lot of API calls here (as this is
+            #    called after each queried repo).
+            hottest = list(all_repo_stars.keys())[0]
         else:
-            # TODO: Select repo with most stars overall instead, or just the first one.
-            hottest_repo, hottest_new_stars = None, None
+            # No repos at all.
+            hottest = "No repos yet :)"
 
         stats = {
             "username": self.username,
@@ -458,8 +464,7 @@ class StatsMaker:
             # "new_repos": new_repos,
             "new_stars": new_stars,
             # "hottest_name": hottest_name,
-            "hottest_repo": hottest_repo,
-            "hottest_new_stars": hottest_new_stars,
+            "hottest": hottest,
             # "external_repos": external_repos,
         }
         return stats

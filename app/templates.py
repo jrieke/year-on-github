@@ -14,7 +14,7 @@ My year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a> 
 📬 Commits/Issues/PRs: {contributions}<br>
 🏝️ Repos contributed to: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
-🔥 Hottest: {hottest_repo} (+{hottest_new_stars})
+🔥 Hottest: {hottest}
 <br><br>
 Share yours: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
@@ -26,7 +26,7 @@ Our year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a>
 <br><br>
 👷 Contributors: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
-🔥 Hottest: {hottest_repo} (+{hottest_new_stars})
+🔥 Hottest: {hottest}
 <br><br>
 Share yours: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
