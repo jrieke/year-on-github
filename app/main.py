@@ -30,6 +30,13 @@ utils.local_css("static/local_styles.css")
 # )
 st.image(OCTOPUS_ICON, width=100)
 st.title("Tweet your Github stats for 2020 ✨")
+st.write(
+    """
+    [![Star](https://img.shields.io/github/stars/jrieke/year-on-github.svg?logo=github&style=social)](https://gitHub.com/jrieke/year-on-github)
+    &nbsp[![Follow](https://img.shields.io/twitter/follow/jrieke?style=social)](https://www.twitter.com/jrieke)
+    """
+    # &nbsp[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee--yellow.svg?logo=buy-me-a-coffee&logoColor=orange&style=social)](https://www.buymeacoffee.com/jrieke)
+)
 username = st.text_input("Your Github user/org name")
 clicked = st.button("Show preview")
 # checkbox_count = st.empty()
@@ -41,10 +48,10 @@ tweet_box = st.empty()
 # col1, col2 = st.beta_columns(2)
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
-star_text = st.write(
-    '<span class="small-text">If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/year-on-github">give it a ⭐ on Github</a> :)</span>',
-    unsafe_allow_html=True,
-)
+# star_text = st.write(
+#     '<span class="small-text">If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/year-on-github">give it a ⭐ on Github</a> :)</span>',
+#     unsafe_allow_html=True,
+# )
 tweet_button = st.empty()
 
 # Show tweets from Twitter bot (@gh2020_bot). The content of the iframe is hosted in

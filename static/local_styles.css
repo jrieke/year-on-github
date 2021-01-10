@@ -26,8 +26,12 @@ a {
 } */
 
 h1 {
-  line-height: 1.5;
-  margin-bottom: 15px;
+  line-height: 1.25;
+  /* margin-bottom: 15px; */
+}
+
+.stTextInput {
+  margin-top: 15px;
 }
 
 /* #avatar {
