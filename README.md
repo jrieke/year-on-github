@@ -82,3 +82,14 @@ To update the deployed app, commit your changes and run:
 ```
 git push heroku main
 ```
+
+# TODO
+
+PRs are welcome! Please open an issue before you work on any of these.
+
+- [ ] New stars for repos >40k stars are not properly calculated because the Github
+  API only returns the first 40k stars. Improve this by using the current 
+  stargazers_count to calculate/estimate the number of new stars.
+- [ ] Maybe: Use stargazers_count in `query_repo` so it's not required to read the last
+  page of stargazers. This requires to disable hashing for stargazers_count in 
+  streamlit's cache function.
