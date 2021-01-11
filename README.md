@@ -91,7 +91,7 @@ To update the deployed app, commit your changes and run:
 git push heroku main
 ```
 
-# TODO
+## TODO
 
 PRs are welcome! Please open an issue before you work on any of these.
 
