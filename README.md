@@ -93,7 +93,7 @@ git push heroku main
 
 ## TODO
 
-PRs are welcome! Please open an issue before you work on any of these.
+PRs are welcome! Please open an issue before you start working to coordinate. 
 
 - [ ] New stars for repos >40k stars are not properly calculated because the Github
   API only returns the first 40k stars. Improve this by using the current 
@@ -101,3 +101,4 @@ PRs are welcome! Please open an issue before you work on any of these.
 - [ ] Maybe: Use stargazers_count in `query_repo` so it's not required to read the last
   page of stargazers. This requires to disable hashing for stargazers_count in 
   streamlit's cache function.
+- [ ] Right now, new stars for 2021 are also counted. Fix this.
