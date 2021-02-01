@@ -220,7 +220,7 @@ if username or (clicked and username):
     )
 
 # Tracking pixel to count number of visitors.
-if st.secrets("TRACKING_NAME"):
+if st.secrets["TRACKING_NAME"]:
     st.write(
-        f"![](https://jrieke.goatcounter.com/count?p={st.secrets('TRACKING_NAME')})"
+        f"![](https://jrieke.goatcounter.com/count?p={st.secrets['TRACKING_NAME']})"
     )

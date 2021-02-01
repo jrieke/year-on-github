@@ -23,6 +23,7 @@ from ghapi.core import GhApi
 from ghapi.page import pages
 
 import utils
+import secrets_beta
 
 
 # Monkey-patch ghapi/fastcore. This makes it raise a timeout error if an API request
@@ -35,8 +36,8 @@ fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
 # load_dotenv()
-if st.secrets("GH_TOKENS"):
-    GH_TOKENS = st.secrets("GH_TOKENS").split(",")
+if st.secrets["GH_TOKENS"]:
+    GH_TOKENS = st.secrets["GH_TOKENS"].split(",")
     print(f"Found {len(GH_TOKENS)} token(s) for Github API")
 else:
     raise RuntimeError(
