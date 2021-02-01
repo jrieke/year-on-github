@@ -1,6 +1,7 @@
 app/playground.ipynb
 heroku_logs.txt
 .vscode
+.streamlit/secrets.toml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -16,6 +16,7 @@ import streamlit as st
 import github_reader
 import utils
 import templates
+import secrets_beta
 
 
 # Set up page.
@@ -219,7 +220,7 @@ if username or (clicked and username):
     )
 
 # Tracking pixel to count number of visitors.
-if os.getenv("TRACKING_NAME"):
+if st.secrets("TRACKING_NAME"):
     st.write(
-        f"![](https://jrieke.goatcounter.com/count?p={os.getenv('TRACKING_NAME')})"
+        f"![](https://jrieke.goatcounter.com/count?p={st.secrets('TRACKING_NAME')})"
     )
