@@ -34,7 +34,7 @@ fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout
 # Set up the Github REST API client.
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
-load_dotenv()
+# load_dotenv()
 if st.secrets("GH_TOKENS"):
     GH_TOKENS = st.secrets("GH_TOKENS").split(",")
     print(f"Found {len(GH_TOKENS)} token(s) for Github API")
