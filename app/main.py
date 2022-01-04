@@ -19,8 +19,7 @@ import templates
 
 
 # Set up page.
-OCTOPUS_ICON = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png"
-st.set_page_config(page_title="Year on Github 2021", page_icon=OCTOPUS_ICON)
+st.set_page_config(page_title="Year on Github 2021", page_icon="🦑")
 utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
@@ -28,7 +27,7 @@ utils.local_css("static/local_styles.css")
 #     '<div class="sticky-header">Built by <a href="https://twitter.com/jrieke">@jrieke</a></div>',
 #     unsafe_allow_html=True,
 # )
-st.image(OCTOPUS_ICON, width=100)
+utils.icon("🦑")
 st.title("Tweet your Github stats for 2021 ✨")
 st.write(
     """
