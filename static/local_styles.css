@@ -83,7 +83,7 @@ button {
   margin-top: -10px;
   /* margin-bottom: 20px; */
   padding: 20px;
-  border: 1px solid #4d9feb;
+  border: 1px solid #1da1f2;
   border-radius: 0.25rem;
 }
 
@@ -92,7 +92,7 @@ button {
 }
 
 #twitter-button {
-  background-color: #4d9feb;
+  background-color: #1da1f2;
   padding: 5px;
   border-radius: 5px;
   color: white;

@@ -27,7 +27,14 @@ utils.local_css("static/local_styles.css")
 #     '<div class="sticky-header">Built by <a href="https://twitter.com/jrieke">@jrieke</a></div>',
 #     unsafe_allow_html=True,
 # )
-utils.icon("🦑")
+# utils.icon("🦑")
+# st.image(
+#     "https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png", width=100
+# )
+st.write(
+    '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="filter: hue-rotate(230deg) brightness(1.1);">',
+    unsafe_allow_html=True,
+)
 st.title("Tweet your Github stats for 2021 ✨")
 st.write(
     """
