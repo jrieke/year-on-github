@@ -6,75 +6,24 @@
   max-width: 440px;
 }
 
-/* .small-text {
-  font-size: 0.8rem;
-} */
-
 a {
   text-decoration: none;
 }
-
-/* .sticky-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  max-width: 420px;
-  margin-left: -16px;
-  padding-top: 20px;
-  padding-bottom: 10px;
-  text-align: center;
-  z-index: 1000;
-  background-color: white;
-  color: gray;
-  font-size: 10pt;
-} */
 
 h1 {
   line-height: 1.25;
   padding-bottom: 0.7rem;
 }
 
-/* .stTextInput {
-  margin-top: 15px;
-} */
-
-/* #avatar {
-  border-radius: 50%;
-  width: 100%;
-} */
-
-/* .reportview-container button:first-child {
-  width: 100% !important;
-  margin-bottom: 20px !important;
-  border-color: #bfbfbf !important;
-} */
-
-/* .stCheckbox {
-  margin-bottom: -5px;
-} */
-
 #progress-text {
   font-size: 0.8rem;
-  /* margin-top: 20px; */
 }
 
-/* .stProgress {
-  margin-left: -12px;
-  margin-right: -12px;
-  margin-top: -20px;
-} */
-
-/* .stProgress > div > div > div > div {
-  background-color: #4d9feb;
-} */
-
-/* .stAlert {
-  margin-bottom: 20px;
-} */
+.stProgress > div > div > div > div {
+  background-color: #1da1f2;
+}
 
 #tweet {
-  /* margin-top: 10px; */
-  /* margin-bottom: 20px; */
   padding: 20px;
   border: 1px solid #1da1f2;
   border-radius: 0.25rem;
@@ -108,19 +57,4 @@ div .bk-root .bk {
   color: white;
   font-size: 6pt;
   margin-top: 25px;
-}
-
-@media (min-width: 640px) {
-  #tweet {
-    /* margin-left: 120px; */
-    /* margin-right: 120px; */
-  }
-
-  #twitter-button {
-    /* margin-left: 120px; */
-  }
-
-  div .bk-root .bk {
-    /* margin-right: 120px !important; */
-  }
 }
