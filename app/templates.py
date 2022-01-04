@@ -16,7 +16,7 @@ My year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a> 
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest}
 <br><br>
-Share yours: <a href="https://gh2021.jrieke.com">gh2021.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
+Share yours: <a href="https://gh.jrieke.com">gh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
@@ -28,7 +28,7 @@ Our year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a>
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest}
 <br><br>
-Share yours: <a href="https://gh2021.jrieke.com">gh2021.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
+Share yours: <a href="https://gh.jrieke.com">gh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
