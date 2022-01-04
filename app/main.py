@@ -22,6 +22,18 @@ import templates
 st.set_page_config(page_title="Year on Github 2021", page_icon="🦑")
 utils.local_css("static/local_styles.css")
 
+if "show_all_repos" not in st.session_state:
+    st.session_state["show_all_repos"] = False
+
+
+def show_more():
+    st.session_state["show_all_repos"] = True
+
+
+def show_less():
+    st.session_state["show_all_repos"] = False
+
+
 # Create all streamlit components.
 # st.write(
 #     '<div class="sticky-header">Built by <a href="https://twitter.com/jrieke">@jrieke</a></div>',
@@ -100,10 +112,13 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
                         if st.checkbox(repo, key="external" + username + repo):
                             include_external.append(repo)
                     if len(external_repos) > 5:
-                        with st.expander("Show more"):
+                        if st.session_state["show_all_repos"]:
                             for repo in external_repos[5:]:
                                 if st.checkbox(repo, key="external" + username + repo):
                                     include_external.append(repo)
+                            st.button("Show less", on_click=show_less)
+                        else:
+                            st.button("Show more", on_click=show_more)
     return include_external
 
 

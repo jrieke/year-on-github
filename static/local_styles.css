@@ -39,7 +39,7 @@ h1 {
   width: 100%;
 } */
 
-button {
+.reportview-container button {
   width: 100% !important;
   margin-bottom: 20px !important;
   border-color: #bfbfbf !important;
@@ -49,7 +49,7 @@ button {
   margin-bottom: -5px;
 }
 
-.streamlit-expanderHeader {
+/* .streamlit-expanderHeader {
   border: none !important;
   padding-top: 0.25em;
   padding-left: 1px;
@@ -58,18 +58,18 @@ button {
 .streamlit-expanderContent {
   border: none !important;
   padding-top: 0.3em;
-}
+} */
 
 #progress-text {
   font-size: 0.8rem;
   margin-top: 20px;
 }
 
-.stProgress {
+/* .stProgress {
   margin-left: -12px;
   margin-right: -12px;
   margin-top: -20px;
-}
+} */
 
 /* .stProgress > div > div > div > div {
   background-color: #4d9feb;
