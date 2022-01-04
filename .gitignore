@@ -1,3 +1,4 @@
+.streamlit/secrets.toml
 app/playground.ipynb
 heroku_logs.txt
 .vscode
