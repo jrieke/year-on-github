@@ -227,7 +227,7 @@ if username:
     )
 
 # Tracking pixel to count number of visitors.
-if os.getenv("TRACKING_NAME"):
+if "TRACKING_NAME" in st.secrets:
     st.write(
-        f"![](https://jrieke.goatcounter.com/count?p={os.getenv('TRACKING_NAME')})"
+        f"![](https://jrieke.goatcounter.com/count?p={st.secrets['TRACKING_NAME']})"
     )
