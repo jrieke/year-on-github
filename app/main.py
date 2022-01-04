@@ -31,6 +31,7 @@ utils.local_css("static/local_styles.css")
 # st.image(
 #     "https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png", width=100
 # )
+st.write("")
 st.write(
     '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="filter: hue-rotate(230deg) brightness(1.1);">',
     unsafe_allow_html=True,

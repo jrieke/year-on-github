@@ -9,26 +9,26 @@ import github_reader
 # with the stats later and shown in the box.
 USER_TEMPLATE = """
 <p id="tweet">
-My year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a> 🐙 {username}
+My year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a> 🐙 {username}
 <br><br>
 📬 Commits/Issues/PRs: {contributions}<br>
 🏝️ Repos contributed to: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest}
 <br><br>
-Share yours: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
+Share yours: <a href="https://gh2021.jrieke.com">gh2021.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
 ORG_TEMPLATE = """
 <p id="tweet">
-Our year on <a href="https://twitter.com/search?q=%23Github2020">#Github2020</a> 🐙 {username}
+Our year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a> 🐙 {username}
 <br><br>
 👷 Contributors: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest}
 <br><br>
-Share yours: <a href="https://gh2020.jrieke.com">gh2020.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
+Share yours: <a href="https://gh2021.jrieke.com">gh2021.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a>
 </p>
 """
 
