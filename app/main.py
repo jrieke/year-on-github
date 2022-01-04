@@ -61,6 +61,10 @@ st.write(
     # &nbsp[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee--yellow.svg?logo=buy-me-a-coffee&logoColor=orange&style=social)](https://www.buymeacoffee.com/jrieke)
 )
 username = st.text_input("Your Github user/org name")
+if not username:
+    st.button("Show preview")
+    # This button doesn't do anything, the page updates anyway when clicked.
+    # But it reassures the user that it's just a preview and we don't tweet immediately.
 # if st.session_state["preview_shown"] or not username:
 #     clicked = st.button("Show preview")
 # else:
