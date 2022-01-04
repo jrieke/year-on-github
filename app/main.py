@@ -106,12 +106,9 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
                 "Count stars of external repos I contributed to", key="count" + username
             )
             if count:
-                _, col = st.columns([0.05, 0.95])
+                _, col = st.columns([0.06, 0.94])
                 with col:
-                    st.write(
-                        '<span class="small-text"><i>Sorted by number of commits, highest first</i></span>',
-                        unsafe_allow_html=True,
-                    )
+                    st.caption("Repo with most commits first")
                     for repo in external_repos[:5]:
                         # Need to set custom key here so this doesn't keep state when
                         # querying for different users (only happens if they contributed to
