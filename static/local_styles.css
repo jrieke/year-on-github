@@ -1,3 +1,7 @@
+[data-testid="stDecoration"] {
+  background: linear-gradient(90deg, #1da1f2, rgb(255, 253, 128));
+}
+
 .reportview-container .main .block-container {
   max-width: 440px;
 }
