@@ -1,5 +1,0 @@
-git+git://github.com/jrieke/ghapi#egg=ghapi
-requests==2.24.0
-bokeh==2.2.3
-python-dotenv==0.15.0
-streamlit==0.73.1
