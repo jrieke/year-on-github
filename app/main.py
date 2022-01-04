@@ -34,6 +34,10 @@ def show_less():
     st.session_state["show_all_repos"] = False
 
 
+if "preview_shown" not in st.session_state:
+    st.session_state["preview_shown"] = False
+
+
 # Create all streamlit components.
 # st.write(
 #     '<div class="sticky-header">Built by <a href="https://twitter.com/jrieke">@jrieke</a></div>',
@@ -48,7 +52,7 @@ st.write(
     '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="filter: hue-rotate(230deg) brightness(1.1);">',
     unsafe_allow_html=True,
 )
-st.title("Tweet your Github stats for 2021 ✨")
+st.title("Tweet your Github stats for 2021")
 st.write(
     """
     [![Star](https://img.shields.io/github/stars/jrieke/year-on-github.svg?logo=github&style=social)](https://gitHub.com/jrieke/year-on-github)
@@ -57,7 +61,10 @@ st.write(
     # &nbsp[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee--yellow.svg?logo=buy-me-a-coffee&logoColor=orange&style=social)](https://www.buymeacoffee.com/jrieke)
 )
 username = st.text_input("Your Github user/org name")
-clicked = st.button("Show preview")
+# if st.session_state["preview_shown"] or not username:
+#     clicked = st.button("Show preview")
+# else:
+#     clicked = True
 # checkbox_count = st.empty()
 checkboxes_external = st.container()
 progress_text = st.empty()
@@ -137,10 +144,7 @@ def print_error(e, print_traceback=False):
     print()
 
 
-# TODO: The 2nd part is actually a bit useless here. Clicking the button actually
-#   doesn't change a critical value but it just updates the page so the username
-#   value is passed on properly.
-if username or (clicked and username):
+if username:
 
     # Hide some components in case they are already shown but a new username is queried.
     tweet_button.write("")

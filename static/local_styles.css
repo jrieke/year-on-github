@@ -39,26 +39,15 @@ h1 {
   width: 100%;
 } */
 
-.reportview-container button {
+/* .reportview-container button:first-child {
   width: 100% !important;
   margin-bottom: 20px !important;
   border-color: #bfbfbf !important;
-}
+} */
 
 .stCheckbox {
   margin-bottom: -5px;
 }
-
-/* .streamlit-expanderHeader {
-  border: none !important;
-  padding-top: 0.25em;
-  padding-left: 1px;
-}
-
-.streamlit-expanderContent {
-  border: none !important;
-  padding-top: 0.3em;
-} */
 
 #progress-text {
   font-size: 0.8rem;
