@@ -19,7 +19,7 @@ import templates
 
 
 # Set up page.
-st.set_page_config(page_title="Year on Github 2021", page_icon="🦑")
+st.set_page_config(page_title="Year on Github 2021", page_icon="🐙")
 utils.local_css("static/local_styles.css")
 
 if "show_all_repos" not in st.session_state:
