@@ -20,7 +20,7 @@ import templates
 
 # Set up page.
 OCTOPUS_ICON = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/259/octopus_1f419.png"
-st.set_page_config(page_title="Year on Github 2020", page_icon=OCTOPUS_ICON)
+st.set_page_config(page_title="Year on Github 2021", page_icon=OCTOPUS_ICON)
 utils.local_css("static/local_styles.css")
 
 # Create all streamlit components.
@@ -29,7 +29,7 @@ utils.local_css("static/local_styles.css")
 #     unsafe_allow_html=True,
 # )
 st.image(OCTOPUS_ICON, width=100)
-st.title("Tweet your Github stats for 2020 ✨")
+st.title("Tweet your Github stats for 2021 ✨")
 st.write(
     """
     [![Star](https://img.shields.io/github/stars/jrieke/year-on-github.svg?logo=github&style=social)](https://gitHub.com/jrieke/year-on-github)
@@ -40,12 +40,12 @@ st.write(
 username = st.text_input("Your Github user/org name")
 clicked = st.button("Show preview")
 # checkbox_count = st.empty()
-checkboxes_external = st.beta_container()
+checkboxes_external = st.container()
 progress_text = st.empty()
 progress_bar = st.empty()
-error_box = st.beta_container()
+error_box = st.container()
 tweet_box = st.empty()
-# col1, col2 = st.beta_columns(2)
+# col1, col2 = st.columns(2)
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
 # star_text = st.write(
@@ -80,7 +80,7 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
                 "Count stars of external repos I contributed to", key="count" + username
             )
             if count:
-                _, col = st.beta_columns([0.05, 0.95])
+                _, col = st.columns([0.05, 0.95])
                 with col:
                     st.write(
                         '<span class="small-text"><i>Sorted by number of commits, highest first</i></span>',
@@ -93,7 +93,7 @@ def show_checkboxes_external(external_repos: List[str]) -> List[str]:
                         if st.checkbox(repo, key="external" + username + repo):
                             include_external.append(repo)
                     if len(external_repos) > 5:
-                        with st.beta_expander("Show more"):
+                        with st.expander("Show more"):
                             for repo in external_repos[5:]:
                                 if st.checkbox(repo, key="external" + username + repo):
                                     include_external.append(repo)
@@ -133,7 +133,7 @@ if username or (clicked and username):
             f'<p id="progress-text">Getting user: {username}</p>',
             unsafe_allow_html=True,
         )
-        stats_maker = github_reader.StatsMaker(username, 2020)
+        stats_maker = github_reader.StatsMaker(username, 2021)
 
         # Show a checkbox for each external repo that the user contributed to.
         include_external = show_checkboxes_external(stats_maker.external_repos)
