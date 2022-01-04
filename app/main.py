@@ -39,14 +39,6 @@ if "preview_shown" not in st.session_state:
 
 
 # Create all streamlit components.
-# st.write(
-#     '<div class="sticky-header">Built by <a href="https://twitter.com/jrieke">@jrieke</a></div>',
-#     unsafe_allow_html=True,
-# )
-# utils.icon("🦑")
-# st.image(
-#     "https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png", width=100
-# )
 st.write("")
 st.write(
     '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="margin-left: 5px; filter: hue-rotate(230deg) brightness(1.1);">',
@@ -58,32 +50,19 @@ st.write(
     [![Star](https://img.shields.io/github/stars/jrieke/year-on-github.svg?logo=github&style=social)](https://gitHub.com/jrieke/year-on-github)
     &nbsp[![Follow](https://img.shields.io/twitter/follow/jrieke?style=social)](https://www.twitter.com/jrieke)
     """
-    # &nbsp[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee--yellow.svg?logo=buy-me-a-coffee&logoColor=orange&style=social)](https://www.buymeacoffee.com/jrieke)
 )
 st.write("")
-# st.write("")
 username = st.text_input("Your Github user/org name")
 if not username:
     st.button("Show preview")
     # This button doesn't do anything, the page updates anyway when clicked.
     # But it reassures the user that it's just a preview and we don't tweet immediately.
-# if st.session_state["preview_shown"] or not username:
-#     clicked = st.button("Show preview")
-# else:
-#     clicked = True
-# checkbox_count = st.empty()
+
 progress_text = st.empty()
 progress_bar = st.empty()
 error_box = st.container()
 tweet_box = st.empty()
 checkboxes_external = st.container()
-# col1, col2 = st.columns(2)
-# twitter_button = col1.empty()
-# copy_button = col2.empty()
-# star_text = st.write(
-#     '<span class="small-text">If you like this site, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/jrieke/year-on-github">give it a ⭐ on Github</a> :)</span>',
-#     unsafe_allow_html=True,
-# )
 tweet_button = st.empty()
 
 # Show tweets from Twitter bot (@gh2020_bot). The content of the iframe is hosted in
@@ -207,7 +186,7 @@ if username:
         # Show an error message if there's a HTTP timeout. This can happen some time if
         # we made lots of API requests in a few minutes.
         error_box.error(
-            f"""
+            """
             :octopus: **Octocrap!** Got a timeout from the Github API – this can happen
             if you have large repos or too many people are using this site at the same 
             time :/ You can just reload this site and enter your username again,
@@ -222,7 +201,7 @@ if username:
         # Show an error message if we couldn't access the API - probably because we
         # reached the rate limit.
         error_box.error(
-            f"""
+            """
             :octopus: **Octocrap!** Couldn't access the Github API – this can happen
             if too many people are using this site at the same time :/ Try again
             later or [open an issue](https://github.com/jrieke/my-year-on-github/issues).
@@ -233,7 +212,7 @@ if username:
         # Show an error message for any unexpected exceptions.
         # Do not reset progress bar here, so the user can report when it stopped.
         error_box.error(
-            f"""
+            """
             :octopus: **Octocrap!** Something went wrong. Please
             [open an issue on Github](https://github.com/jrieke/my-year-on-github/issues)
             and report the error printed below.
