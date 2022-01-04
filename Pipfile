@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ghapi = {git = "git://github.com/jrieke/ghapi"}
-requests = "==2.24.0"
-bokeh = "==2.2.3"
-python-dotenv = "==0.15.0"
+ghapi = "*"
+requests = "*"
+bokeh = "*"
 streamlit = "*"
 watchdog = "*"
 
