@@ -2,9 +2,9 @@
   max-width: 440px;
 }
 
-.small-text {
+/* .small-text {
   font-size: 0.8rem;
-}
+} */
 
 a {
   text-decoration: none;
@@ -27,12 +27,12 @@ a {
 
 h1 {
   line-height: 1.25;
-  /* margin-bottom: 15px; */
+  padding-bottom: 0.7rem;
 }
 
-.stTextInput {
+/* .stTextInput {
   margin-top: 15px;
-}
+} */
 
 /* #avatar {
   border-radius: 50%;
@@ -45,13 +45,13 @@ h1 {
   border-color: #bfbfbf !important;
 } */
 
-.stCheckbox {
+/* .stCheckbox {
   margin-bottom: -5px;
-}
+} */
 
 #progress-text {
   font-size: 0.8rem;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 /* .stProgress {
@@ -64,12 +64,12 @@ h1 {
   background-color: #4d9feb;
 } */
 
-.stAlert {
+/* .stAlert {
   margin-bottom: 20px;
-}
+} */
 
 #tweet {
-  margin-top: -10px;
+  /* margin-top: 10px; */
   /* margin-bottom: 20px; */
   padding: 20px;
   border: 1px solid #1da1f2;

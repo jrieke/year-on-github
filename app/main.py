@@ -49,7 +49,7 @@ if "preview_shown" not in st.session_state:
 # )
 st.write("")
 st.write(
-    '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="filter: hue-rotate(230deg) brightness(1.1);">',
+    '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="margin-left: 5px; filter: hue-rotate(230deg) brightness(1.1);">',
     unsafe_allow_html=True,
 )
 st.title("Tweet your Github stats for 2021")
@@ -60,6 +60,8 @@ st.write(
     """
     # &nbsp[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee--yellow.svg?logo=buy-me-a-coffee&logoColor=orange&style=social)](https://www.buymeacoffee.com/jrieke)
 )
+st.write("")
+# st.write("")
 username = st.text_input("Your Github user/org name")
 if not username:
     st.button("Show preview")
@@ -70,11 +72,11 @@ if not username:
 # else:
 #     clicked = True
 # checkbox_count = st.empty()
-checkboxes_external = st.container()
 progress_text = st.empty()
 progress_bar = st.empty()
 error_box = st.container()
 tweet_box = st.empty()
+checkboxes_external = st.container()
 # col1, col2 = st.columns(2)
 # twitter_button = col1.empty()
 # copy_button = col2.empty()
@@ -188,7 +190,7 @@ if username:
                 print("=" * 80)
 
         progress_bar.empty()
-        progress_text.write("")
+        progress_text.empty()
 
     except github_reader.UserNotFoundError as e:
         # Show an error message if the user doesn't exist.
