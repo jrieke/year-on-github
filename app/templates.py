@@ -9,7 +9,7 @@ import github_reader
 # with the stats later and shown in the box.
 USER_TEMPLATE = """
 <p id="tweet">
-My year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a> 🐙 {username}
+My year on <a href="https://twitter.com/search?q=%23GitHub2021">#GitHub2021</a> 🐙 {username}
 <br><br>
 📬 Commits/Issues/PRs: {contributions}<br>
 🏝️ Repos contributed to: {repos_contributed_to}<br>
@@ -22,7 +22,7 @@ Share yours: <a href="https://gh.jrieke.com">gh.jrieke.com</a> | Built by <a hre
 
 ORG_TEMPLATE = """
 <p id="tweet">
-Our year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a> 🐙 {username}
+Our year on <a href="https://twitter.com/search?q=%23GitHub2021">#GitHub2021</a> 🐙 {username}
 <br><br>
 👷 Contributors: {repos_contributed_to}<br>
 ⭐ New stars: {new_stars}<br>

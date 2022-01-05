@@ -18,7 +18,7 @@ import templates
 
 
 # Set up page.
-st.set_page_config(page_title="Year on Github 2021", page_icon="🐙")
+st.set_page_config(page_title="Year on GitHub 2021", page_icon="🐙")
 utils.local_css("static/local_styles.css")
 
 if "show_all_repos" not in st.session_state:
@@ -43,7 +43,7 @@ st.write(
     '<img width=100 src="https://emojipedia-us.s3.amazonaws.com/source/skype/289/squid_1f991.png" style="margin-left: 5px; filter: hue-rotate(230deg) brightness(1.1);">',
     unsafe_allow_html=True,
 )
-st.title("Tweet your Github stats for 2021")
+st.title("Tweet your GitHub stats for 2021")
 st.write(
     """
     [![Star](https://img.shields.io/github/stars/jrieke/year-on-github.svg?logo=github&style=social)](https://gitHub.com/jrieke/year-on-github)
@@ -51,7 +51,7 @@ st.write(
     """
 )
 st.write("")
-username = st.text_input("Your Github user/org name")
+username = st.text_input("Your GitHub user/org name")
 if not username:
     st.button("Show preview")
     # This button doesn't do anything, the page updates anyway when clicked.
@@ -65,7 +65,7 @@ checkboxes_external = st.container()
 tweet_button = st.empty()
 
 # Show tweets from Twitter bot (@gh2021_bot). The content of the iframe is hosted in
-# a small Github pages site from this repo: https://github.com/jrieke/year-on-github-tweet-wall
+# a small GitHub pages site from this repo: https://github.com/jrieke/year-on-github-tweet-wall
 st.write("---")
 st.markdown(
     """
@@ -133,7 +133,7 @@ if username:
     start_time = time.time()
     try:
         # Create a StatsMaker instance. This already queries some basic information
-        # about the user (e.g. its repos) from the Github API but shouldn't take more
+        # about the user (e.g. its repos) from the GitHub API but shouldn't take more
         # than 1-3 s.
         progress_bar.progress(0)
         progress_text.write(
@@ -186,7 +186,7 @@ if username:
         # we made lots of API requests in a few minutes.
         error_box.error(
             """
-            :octopus: **Octocrap!** Got a timeout from the Github API – this can happen
+            :octopus: **Octocrap!** Got a timeout from the GitHub API – this can happen
             if you have large repos or too many people are using this site at the same 
             time :/ You can just reload this site and enter your username again,
             the crawler will continue where it stopped. 
@@ -201,7 +201,7 @@ if username:
         # reached the rate limit.
         error_box.error(
             """
-            :octopus: **Octocrap!** Couldn't access the Github API – this can happen
+            :octopus: **Octocrap!** Couldn't access the GitHub API – this can happen
             if too many people are using this site at the same time :/ Try again
             later or [open an issue](https://github.com/jrieke/my-year-on-github/issues).
             """
@@ -213,7 +213,7 @@ if username:
         error_box.error(
             """
             :octopus: **Octocrap!** Something went wrong. Please
-            [open an issue on Github](https://github.com/jrieke/my-year-on-github/issues)
+            [open an issue on GitHub](https://github.com/jrieke/my-year-on-github/issues)
             and report the error printed below.
             """
         )

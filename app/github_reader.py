@@ -1,7 +1,7 @@
 """
-Contains methods to query user info and stats from the Github API.
+Contains methods to query user info and stats from the GitHub API.
 
-Note that Github hosts two APIs, a REST API (also known as v3) and a GraphQL API (v4),
+Note that GitHub hosts two APIs, a REST API (also known as v3) and a GraphQL API (v4),
 which are both used here. Expensive API calls are cached via streamlit's `st.cache`.
 """
 
@@ -29,15 +29,15 @@ import utils
 fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout=15)
 
 
-# Set up the Github REST API client.
+# Set up the GitHub REST API client.
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
 if "GH_TOKENS" in st.secrets:
     GH_TOKENS = st.secrets["GH_TOKENS"].split(",")
-    print(f"Found {len(GH_TOKENS)} token(s) for Github API")
+    print(f"Found {len(GH_TOKENS)} token(s) for GitHub API")
 else:
     raise RuntimeError(
-        "Couldn't find a token for Github API! Specify via env variable GH_TOKENS"
+        "Couldn't find a token for GitHub API! Specify via env variable GH_TOKENS"
     )
 
 api = GhApi(
@@ -78,7 +78,7 @@ class TimeoutError(Exception):
 
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
 def _query_user(username: str, year: int) -> Tuple:
-    """Retrieves user infos + own repos + external repos from the Github API."""
+    """Retrieves user infos + own repos + external repos from the GitHub API."""
 
     print("-" * 80)
     print("Querying API for user:", username)
@@ -240,12 +240,12 @@ def _query_user(username: str, year: int) -> Tuple:
 
 @st.cache(hash_funcs={"ghapi.core._GhVerb": lambda _: None}, show_spinner=False)
 def _query_repo(full_name: str, year: int) -> int:
-    """Returns number of new stars in a year through binary search on the Github API."""
+    """Returns number of new stars in a year through binary search on the GitHub API."""
     
     print(full_name)
 
     def get_stargazers(page: int):
-        """Retrieves a page of stargazers from the Github API."""
+        """Retrieves a page of stargazers from the GitHub API."""
         switch_api_token()
         return api.activity.list_stargazers_for_repo(
             *full_name.split("/"),
@@ -272,7 +272,7 @@ def _query_repo(full_name: str, year: int) -> int:
     # TODO: This doesn't work when the result is cached.
     if num_pages == 400:
         warnings.warn("⚠️ You selected a repo with >40k stars. Due to a limitation in "
-                      "the Github API, it's not possible to count all new stars for "
+                      "the GitHub API, it's not possible to count all new stars for "
                       "this repo. The numbers below may be a bit off.")
 
     if num_pages == 1:  # only one page
@@ -344,7 +344,7 @@ def _query_repo(full_name: str, year: int) -> int:
 class StatsMaker:
     def __init__(self, username: str, year: int):
         """
-        Initializes an object, which queries and stores the Github stats for a user.
+        Initializes an object, which queries and stores the GitHub stats for a user.
 
         This calls the cached functions above to query the API. Note that these
         functions cannot be included directly in this class because streamlit's
