@@ -2,7 +2,7 @@
 
 [![Heroku App Status](http://heroku-shields.herokuapp.com/year-on-github)](http://gh2020.jrieke.com)
 
-**Share your Github stats for 2020 on Twitter.**
+**Share your Github stats for last year on Twitter.**
 
 This project contains a small web app that let's you share stats about your Github 
 activity from last year. It's like Spotify's "year in review" but for Github. The app 
@@ -15,7 +15,7 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 ---
 
 <h3 align="center">
-    🎉 Try it out: <a href="http://gh2020.jrieke.com">gh2020.jrieke.com</a> 🎉
+    🎉 Try it out: <a href="http://gh.jrieke.com">gh.jrieke.com</a> 🎉
 </h3>
 
 ---
@@ -28,7 +28,7 @@ is built with [Streamlit](https://www.streamlit.io/), queries Github's API via
 </h3> -->
 
 <p align="center">
-    <a href="http://gh2020.jrieke.com/"><img src="images/demo.gif" width=700></a>
+    <a href="http://gh.jrieke.com/"><img src="images/demo.gif" width=700></a>
 </p>
 
 <br>
