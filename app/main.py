@@ -3,7 +3,6 @@ Runs the streamlit app.
 """
 
 import time
-import os
 from typing import List
 from socket import timeout
 from urllib.error import URLError

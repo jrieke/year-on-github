@@ -5,7 +5,6 @@ Note that Github hosts two APIs, a REST API (also known as v3) and a GraphQL API
 which are both used here. Expensive API calls are cached via streamlit's `st.cache`.
 """
 
-import os
 import time
 from datetime import datetime
 import copy
@@ -14,7 +13,6 @@ import functools
 import random
 import warnings
 
-# from dotenv import load_dotenv
 import requests
 from fastcore.net import HTTP404NotFoundError
 import fastcore.net
@@ -34,7 +32,6 @@ fastcore.net._opener.open = functools.partial(fastcore.net._opener.open, timeout
 # Set up the Github REST API client.
 # Note that ghapi contains a bug in the `paged` method as of December 2020, therefore
 # it's safer to install my fork (see README.md for instructions).
-# load_dotenv()
 if "GH_TOKENS" in st.secrets:
     GH_TOKENS = st.secrets["GH_TOKENS"].split(",")
     print(f"Found {len(GH_TOKENS)} token(s) for Github API")
