@@ -65,13 +65,13 @@ tweet_box = st.empty()
 checkboxes_external = st.container()
 tweet_button = st.empty()
 
-# Show tweets from Twitter bot (@gh2020_bot). The content of the iframe is hosted in
-# a small Github pages site from this repo: https://github.com/jrieke/gh2020-tweet-wall
+# Show tweets from Twitter bot (@gh2021_bot). The content of the iframe is hosted in
+# a small Github pages site from this repo: https://github.com/jrieke/year-on-github-tweet-wall
 st.write("---")
 st.markdown(
     """
     <div style="display: flex; width: 100%; height: 100%; flex-direction: column; overflow: hidden;">
-        <iframe height="1000" style="margin-left: -15px;" src="https://www.jrieke.com/gh2020-tweet-wall/"></iframe>
+        <iframe height="1000" style="margin-left: -15px;" src="https://www.jrieke.com/year-on-github-tweet-wall/"></iframe>
     </div>
     """,
     unsafe_allow_html=True,
