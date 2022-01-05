@@ -16,7 +16,7 @@ My year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a> 
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest}
 <br><br>
-Share yours: <a href="http://gh.jrieke.com">gh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://mobile.twitter.com/github">@github</a>
+Share yours 👉 <a href="http://gh.jrieke.com">gh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://mobile.twitter.com/github">@github</a>
 </p>
 """
 
@@ -28,7 +28,7 @@ Our year on <a href="https://twitter.com/search?q=%23Github2021">#Github2021</a>
 ⭐ New stars: {new_stars}<br>
 🔥 Hottest: {hottest}
 <br><br>
-Share yours: <a href="http://gh.jrieke.com">gh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://mobile.twitter.com/github">@github</a>
+Share yours 👉 <a href="http://gh.jrieke.com">gh.jrieke.com</a> | Built by <a href="https://twitter.com/jrieke">@jrieke</a> w/ <a href="https://twitter.com/streamlit">@streamlit</a> <a href="https://mobile.twitter.com/github">@github</a>
 </p>
 """
 
